@@ -1,0 +1,15 @@
+{
+  "name": "comp4020",
+  "description": "Claude Code skills for students in COMP4020/COMP8020 Agentic Coding Studio at the ANU",
+  "owner": {
+    "name": "COMP4020 teaching team",
+    "url": "https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/"
+  },
+  "plugins": [
+    {
+      "name": "comp4020",
+      "source": "./comp4020",
+      "description": "Claude Code skills for students in COMP4020/COMP8020 Agentic Coding Studio at the ANU"
+    }
+  ]
+}
