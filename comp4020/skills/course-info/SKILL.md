@@ -24,12 +24,12 @@ https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio
 
 ## Endpoints
 
-| Endpoint                        | What it returns                                                                                            |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `/api/index.json`               | Every content node: `{id, type, title, description, tags, related}`. The map of what exists — start here.  |
-| `/api/<collection>/<slug>.json` | One node in full: the fields above plus `meta`, `links`, and `body` (complete markdown of the page).       |
-| `/llms.txt`                     | Annotated index of every page on the site (including pages not in the API, e.g. people).                   |
-| `/llms-full.txt`                | Full text of every page inline (~100 kB). The fallback when you can't route a question to a specific node. |
+| Endpoint                        | What it returns                                                                                                                                                                                                             |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/api/index.json`               | Every content node: `{id, type, title, description, tags, related, meta}`. `meta` carries the structured facts (`week`, `due`, `weight`, `draft`) — most factual questions are answerable from the index alone. Start here. |
+| `/api/<collection>/<slug>.json` | One node in full: the fields above plus `links` and `body` (complete markdown of the page).                                                                                                                                 |
+| `/llms.txt`                     | Annotated index of every page on the site (including pages not in the API, e.g. people). Draft pages are marked `(draft)`.                                                                                                  |
+| `/llms-full.txt`                | Full text of every page inline (~100 kB). The fallback when you can't route a question to a specific node. Draft pages carry a `_Draft: …_` notice line.                                                                    |
 
 Node collections in the API: `topics` (concepts, policies, how-to guides),
 `assessments`, `crits`, `lectures`. The **people** collection (convenor, TAs,
@@ -37,18 +37,25 @@ guest lecturers) is _not_ in the API — people pages are plain HTML, not
 JSON/markdown (see the people routing rule below).
 
 Node ids are refs that map directly to page URLs: `assessments/assignment-1` ↔
-`/assessments/assignment-1/` ↔ `/api/assessments/assignment-1.json`.
+`/assessments/assignment-1/` ↔ `/api/assessments/assignment-1.json`. A node's
+`related` list includes connections declared from either end, so "what relates
+to X" is answerable from X's entry alone.
+
+One URL that looks like a node but isn't: the hall of fame at
+`/crits/hall-of-fame/` is a listing page, so `/api/crits/hall-of-fame.json` does
+not exist — read the HTML page instead.
 
 ## Routing
 
-- **Due dates, weights, weeks** — fetch `/api/index.json`, find the assessment
-  node by title, then fetch its per-node JSON. Always match by title in the
-  index — never construct a slug by guessing, since an assignment's colloquial
-  name ("assignment 3") may appear only parenthetically in the title of a
-  differently-slugged node. `meta` carries the structured facts:
-  `{week, due, weight}` for assessments, `{week}` for crits. `due` is an ISO
-  date; the page `body` states the precise time-of-day and timezone rules, so
-  quote those from the body rather than assuming.
+- **Due dates, weights, weeks** — fetch `/api/index.json` and read the node's
+  `meta`: `{week, due, weight, draft}` for assessments, `{week, draft}` for
+  crits. Always match by title in the index — never construct a slug by
+  guessing, since an assignment's colloquial name ("assignment 3") may appear
+  only parenthetically in the title of a differently-slugged node. Crit slug
+  number ≠ week number (crits run weeks 2–11, so `01-…` is week 2) — trust
+  `meta.week`, not the slug. `due` is an ISO date; the page `body` (per-node
+  JSON) states the precise time-of-day and timezone rules, so fetch and quote
+  those rather than assuming.
 - **Policies and course admin** (extensions, academic integrity, marking,
   enrolment, conduct) — topics nodes tagged `admin` in the index. Fetch the
   matching node's JSON and answer from its `body`.
