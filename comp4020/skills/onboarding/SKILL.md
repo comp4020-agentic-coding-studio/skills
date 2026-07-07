@@ -84,15 +84,10 @@ Two independent confirmations:
     -H "Authorization: Bearer $ANTHROPIC_AUTH_TOKEN" >/dev/null && echo OK
   ```
   200/OK = the key is valid and they're on the ANU network. A connection failure
-  or 403 here just means they're off the VPN — the `/api/*` endpoints are
-  ANU-network-only, but _model traffic isn't_, so Claude Code will still work.
-  Don't block onboarding on a VPN-only failure; note it and move on. A **401 is
-  ambiguous** — the key didn't take, _or_ they're off-VPN — so before you send
-  them back to re-paste, check the unauthenticated health endpoint:
-  `curl -s -o /dev/null -w '%{http_code}' https://strproxy.comp.anu.edu.au/api/health`.
-  200 there means the network's fine and the 401 is a real key problem (recheck
-  the paste in step 3, then Canvas in step 2); a failure there means it's the
-  VPN, so the key may be fine — have them retry on-network.
+  or 403 here usually just means they're off the VPN — the `/api/*` endpoints
+  are ANU-network-only, but _model traffic isn't_, so Claude Code will still
+  work. Don't block onboarding on a VPN-only failure; note it and move on. A 401
+  means the key didn't take — recheck the paste (step 3), then Canvas (step 2).
 - **Claude Code itself routes through the proxy**: note that the setting takes
   effect for _new_ sessions. `claude --print "say hi"` in a fresh shell is the
   canonical smoke test; the current session may need a restart to pick up a

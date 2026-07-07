@@ -101,18 +101,10 @@ routed through the course proxy and the key works:
   curl -sf "${ANTHROPIC_BASE_URL:-https://strproxy.comp.anu.edu.au}/api/me" \
     -H "Authorization: Bearer $ANTHROPIC_AUTH_TOKEN" >/dev/null && echo OK
   ```
-  A 200 is PASS. A connection failure/403 means "not on the ANU VPN" (their
-  actual Claude sessions still work — only `/api/*` is network-restricted). A
-  **401 is ambiguous** — a bad/revoked key _or_ off-VPN — so disambiguate with
-  the unauthenticated health endpoint:
-  ```sh
-  curl -s -o /dev/null -w '%{http_code}' \
-    "${ANTHROPIC_BASE_URL:-https://strproxy.comp.anu.edu.au}/api/health"
-  ```
-  If `/api/health` returns 200 the network is fine, so the 401 is a real key
-  problem → onboarding / Canvas; if `/api/health` also fails, it's the VPN, not
-  the key. Don't treat a VPN-only failure as a broken setup, and don't tell a
-  student their key is revoked on a bare 401 without this check.
+  A 200 is PASS. A connection failure/403 almost always means "not on the ANU
+  VPN" (their actual Claude sessions still work — only `/api/*` is
+  network-restricted); a 401 means the key is wrong or revoked → onboarding /
+  Canvas. Don't treat a VPN-only failure as a broken setup.
 - **Permission mode**: the course recommends auto mode. If you can see they're
   in default/plan mode, mention auto mode as a flow improvement (not a FAIL).
   Never nudge toward `--dangerously-skip-permissions`.
