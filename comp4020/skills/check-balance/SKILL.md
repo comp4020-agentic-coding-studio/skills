@@ -64,10 +64,17 @@ Response fields that matter:
   connect to the ANU VPN. Their actual Claude Code sessions are unaffected (the
   model-traffic path has no such restriction), so a working Claude and a failing
   balance check almost always means "not on the VPN", not a broken key.
-- **401** — the key itself was rejected: `ANTHROPIC_AUTH_TOKEN` is unset,
-  mistyped, or the key has been revoked/rotated. Have them check the env var
-  against the key in the "Your Claude Code API key" assignment comment on
-  Canvas, and contact the course support address if it still fails.
+- **401** — could be a bad key _or_ off-VPN, so disambiguate before you blame
+  the key. Hit the unauthenticated health endpoint:
+  `curl -s -o /dev/null -w '%{http_code}' https://strproxy.comp.anu.edu.au/api/health`.
+  - `/api/health` returns **200** → the network is fine, so the 401 is a real
+    key problem: `ANTHROPIC_AUTH_TOKEN` is unset, mistyped, or revoked/rotated.
+    Have them check the env var against the key in the "Your Claude Code API
+    key" assignment comment on Canvas, and contact the course support address if
+    it still fails.
+  - `/api/health` also fails (connection error / non-200) → it's the network,
+    not the key: they're off the ANU VPN. Same fix as the connection-failure
+    case above.
 
 ## When they're over budget
 
