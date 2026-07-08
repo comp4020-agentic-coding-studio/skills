@@ -2,7 +2,7 @@
 name: doctor
 description:
   Checks a COMP4020/COMP8020 student's machine against the course's required
-  software environment — the GitHub CLI (gh), flyctl, Claude Code's proxy
+  software environment — Git, the GitHub CLI (gh), flyctl, Claude Code's proxy
   config, Chrome, mise — including whether the tools that talk to external
   services (gh, flyctl, the strproxy key) are actually authenticated and
   working, and offers to fix what's broken. Use whenever the user asks to check
@@ -49,6 +49,11 @@ Run `uname -s` (and check for WSL). Tailor every check and fix to the result:
 Run these, classify each **PASS / WARN / FAIL**, and collect a suggested fix for
 anything not PASS. Required tools that are missing or misconfigured are FAIL;
 recommended tools (mise, package manager) are WARN.
+
+### Git (required)
+
+- `git --version` — installed? Assume a 4th-year student already has their name
+  and email configured; don't check or offer to set `user.name`/`user.email`.
 
 ### GitHub CLI `gh` (required, hits an external service)
 

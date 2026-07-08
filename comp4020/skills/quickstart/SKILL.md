@@ -97,5 +97,5 @@ Two independent confirmations:
 ## 5. Hand off
 
 Once the key verifies, offer to run the **doctor** skill to check the rest of
-the environment (`gh`, flyctl, Chrome), and mention **check-balance** for "how
-much budget do I have". Keep it to a sentence — don't over-explain.
+the environment (Git, `gh`, flyctl, Chrome), and mention **check-balance** for
+"how much budget do I have". Keep it to a sentence — don't over-explain.

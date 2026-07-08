@@ -57,10 +57,10 @@ never echoing the key), and verifies the round-trip. Invoke with
 ### doctor
 
 A smart setup check. Reads the course's required-tools list live from the site,
-then checks the student's machine — the GitHub CLI (`gh`) and its auth, flyctl
-and its auth/org membership, the Claude Code proxy config and a live `/api/me`
-probe (which doubles as an "am I on the VPN?" check), Chrome version, mise — and
-**offers to fix** what's broken, confirming each step. Invoke with
+then checks the student's machine — Git, the GitHub CLI (`gh`) and its auth,
+flyctl and its auth/org membership, the Claude Code proxy config and a live
+`/api/me` probe (which doubles as an "am I on the VPN?" check), Chrome version,
+mise — and **offers to fix** what's broken, confirming each step. Invoke with
 `/comp4020:doctor` or ask "is my setup right?".
 
 ### deadline-radar
