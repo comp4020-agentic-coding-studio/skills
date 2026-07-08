@@ -46,13 +46,13 @@ against the cap and when the budget resets, explains the common failure modes
 the budget runs out. Triggers automatically on budget/usage questions, or invoke
 it directly with `/comp4020:check-balance`.
 
-### onboarding
+### quickstart
 
 Walks a first-time student through getting their strproxy key working in Claude
 Code: checks whether it's already set, points them at the key on Canvas, merges
 it safely into `~/.claude/settings.json` (never clobbering existing settings,
 never echoing the key), and verifies the round-trip. Invoke with
-`/comp4020:onboarding` or ask to "set up my key".
+`/comp4020:quickstart` or ask to "set up my key".
 
 ### doctor
 

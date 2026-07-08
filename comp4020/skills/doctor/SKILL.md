@@ -94,7 +94,7 @@ routed through the course proxy and the key works:
   `https://strproxy.comp.anu.edu.au`) and `ANTHROPIC_AUTH_TOKEN` set to an
   `sk-…` key? These normally live in `~/.claude/settings.json` under `env`.
   Missing means they're either on their own Anthropic billing or unconfigured —
-  route them to the **onboarding** skill.
+  route them to the **quickstart** skill.
 - **Live probe**: `GET /api/me` with the key confirms three things at once — the
   key is valid, the proxy is reachable, and they're on the ANU network/VPN:
   ```sh
@@ -103,7 +103,7 @@ routed through the course proxy and the key works:
   ```
   A 200 is PASS. A connection failure/403 almost always means "not on the ANU
   VPN" (their actual Claude sessions still work — only `/api/*` is
-  network-restricted); a 401 means the key is wrong or revoked → onboarding /
+  network-restricted); a 401 means the key is wrong or revoked → quickstart /
   Canvas. Don't treat a VPN-only failure as a broken setup.
 - **Permission mode**: the course recommends auto mode. If you can see they're
   in default/plan mode, mention auto mode as a flow improvement (not a FAIL).
@@ -137,7 +137,7 @@ macOS: `brew --version`. Debian/Ubuntu/WSL: `apt --version`. Missing is a WARN.
 2. For each non-PASS item, state the exact fix command.
 3. **Offer to run the fixes, confirming each one before you run it.** Safe
    config edits (setting `git config`, merging into `settings.json` via the
-   onboarding flow) you can do directly on confirmation; interactive external
+   quickstart flow) you can do directly on confirmation; interactive external
    logins (`gh auth login`, `flyctl auth login`) open a browser and can't be
    fully automated — run them for the user (they'll complete the browser step)
    or hand them the command, whichever the situation calls for. Never run a fix
@@ -146,7 +146,7 @@ macOS: `brew --version`. Debian/Ubuntu/WSL: `apt --version`. Missing is a WARN.
 
 ## Handing off
 
-- No proxy key configured → the **onboarding** skill.
+- No proxy key configured → the **quickstart** skill.
 - "How much budget do I have" / over-budget → the **check-balance** skill.
 - Anything about course rules, deadlines, or what a tool is _for_ → the
   **course-info** skill.

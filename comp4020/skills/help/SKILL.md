@@ -18,12 +18,12 @@ matches a skill's job.
 | --------------------------------------------------------------------------- | ------------------------ |
 | Deadlines, marking, policies, what a lecture covers, who teaches the course | **course-info**          |
 | Your weekly Claude Code budget — spent, left, when it resets                | **check-balance**        |
-| First-time setup — getting your strproxy key working in Claude Code         | **onboarding**           |
+| First-time setup — getting your strproxy key working in Claude Code         | **quickstart**           |
 | Whether your machine is set up right (Git, `gh`, flyctl, Chrome, the proxy) | **doctor**               |
 | What's due / what to work on this week                                      | **deadline-radar**       |
 | Whether your work is ready to submit before a deadline                      | **submission-preflight** |
 
-A natural first-week path is **onboarding** → **doctor**; a natural
+A natural first-week path is **quickstart** → **doctor**; a natural
 before-deadline path is **deadline-radar** → **submission-preflight**.
 
 All course facts come from the live site

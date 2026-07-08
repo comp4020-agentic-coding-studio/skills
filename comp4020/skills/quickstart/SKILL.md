@@ -1,14 +1,15 @@
 ---
-name: onboarding
+name: quickstart
 description:
   Walks a new COMP4020/COMP8020 student through configuring their Claude Code
   strproxy API key end to end — checking whether it's already set, guiding them
   to the key on Canvas, writing it safely into ~/.claude/settings.json, and
-  verifying the round-trip works. Use for first-time setup, "set up my key",
-  "Claude Code isn't using the course proxy", or "how do I get started".
+  verifying the round-trip works. Use for first-time setup, quickstart, "set up
+  my key", "Claude Code isn't using the course proxy", or "how do I get
+  started".
 ---
 
-# COMP4020 onboarding: get your key working
+# COMP4020 quickstart: get your key working
 
 Get a student from nothing to a working, proxy-routed Claude Code. The end state
 is `~/.claude/settings.json` carrying the course proxy base URL and their `sk-…`
@@ -86,7 +87,7 @@ Two independent confirmations:
   200/OK = the key is valid and they're on the ANU network. A connection failure
   or 403 here usually just means they're off the VPN — the `/api/*` endpoints
   are ANU-network-only, but _model traffic isn't_, so Claude Code will still
-  work. Don't block onboarding on a VPN-only failure; note it and move on. A 401
+  work. Don't block setup on a VPN-only failure; note it and move on. A 401
   means the key didn't take — recheck the paste (step 3), then Canvas (step 2).
 - **Claude Code itself routes through the proxy**: note that the setting takes
   effect for _new_ sessions. `claude --print "say hi"` in a fresh shell is the
