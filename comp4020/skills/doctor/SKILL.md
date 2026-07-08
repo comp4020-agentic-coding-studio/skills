@@ -2,7 +2,7 @@
 name: doctor
 description:
   Checks a COMP4020/COMP8020 student's machine against the course's required
-  software environment — Git, the GitHub CLI (gh), flyctl, Claude Code's proxy
+  software environment — the GitHub CLI (gh), flyctl, Claude Code's proxy
   config, Chrome, mise — including whether the tools that talk to external
   services (gh, flyctl, the strproxy key) are actually authenticated and
   working, and offers to fix what's broken. Use whenever the user asks to check
@@ -49,13 +49,6 @@ Run `uname -s` (and check for WSL). Tailor every check and fix to the result:
 Run these, classify each **PASS / WARN / FAIL**, and collect a suggested fix for
 anything not PASS. Required tools that are missing or misconfigured are FAIL;
 recommended tools (mise, package manager) are WARN.
-
-### Git (required)
-
-- `git --version` — installed?
-- `git config --get user.name` and `git config --get user.email` — both set?
-  Unset means commits will be u(mis)attributed. Fix:
-  `git config --global user.name "…"` / `user.email "…"`.
 
 ### GitHub CLI `gh` (required, hits an external service)
 
@@ -136,12 +129,11 @@ macOS: `brew --version`. Debian/Ubuntu/WSL: `apt --version`. Missing is a WARN.
    reason. Lead with the FAILs.
 2. For each non-PASS item, state the exact fix command.
 3. **Offer to run the fixes, confirming each one before you run it.** Safe
-   config edits (setting `git config`, merging into `settings.json` via the
-   quickstart flow) you can do directly on confirmation; interactive external
-   logins (`gh auth login`, `flyctl auth login`) open a browser and can't be
-   fully automated — run them for the user (they'll complete the browser step)
-   or hand them the command, whichever the situation calls for. Never run a fix
-   without an explicit yes.
+   config edits (merging into `settings.json` via the quickstart flow) you can
+   do directly on confirmation; interactive external logins (`gh auth login`,
+   `flyctl auth login`) open a browser and can't be fully automated — run them
+   for the user (they'll complete the browser step) or hand them the command,
+   whichever the situation calls for. Never run a fix without an explicit yes.
 4. If everything's green, say so plainly and stop — no busywork.
 
 ## Handing off
