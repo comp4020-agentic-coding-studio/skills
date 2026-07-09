@@ -70,6 +70,18 @@ schedule and tells the student what's due this week and next, sorted by date
 with weights, leading with the single most urgent thing. Invoke with
 `/comp4020:deadline-radar` or ask "what's due?" / "what should I work on?".
 
+### new-week
+
+Sets up the repo for a new weekly crit prototype: creates it (private) from that
+week's starter template, then **merges the student's `CLAUDE.md` / `AGENTS.md`
+harness forward** from last week's repo rather than resetting them to
+boilerplate, keeping the rules they've accreted and taking the template's new
+material. Asks whether they're keeping their stack or switching, and refuses to
+carry the prototype source, `spec/` or reflections across. Knows which weeks
+don't start a fresh prototype (the retro crits, and weeks 9–11, which run on the
+final-project repo). Invoke with `/comp4020:new-week` or ask to "start this
+week's prototype".
+
 ### submission-preflight
 
 Checks that work is actually submittable before a crit or assignment deadline:
