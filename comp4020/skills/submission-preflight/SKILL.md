@@ -39,10 +39,11 @@ Classify each PASS / WARN / FAIL:
   the marker won't see them. FAIL; offer to `git push`.
 - **Remote is on GitHub** — all course submissions go through GitHub. A missing
   or non-GitHub remote is a FAIL.
-- **Marker can see it** — `gh repo view --json visibility,url`. If the course
-  requires the repo be accessible to the teaching team (private-with-access vs
-  public — check the spec `body`), flag a mismatch. Don't assume; the spec says
-  which.
+- **Marker can see it** — `gh repo view --json visibility,url`. Repos are
+  private while building and public from the cutoff, so a still-private repo
+  close to the cutoff is a WARN, not a FAIL: it's the normal state right up
+  until the student ships. Point them at **ship** rather than flipping it
+  yourself.
 - **Required structure** — read the spec `body` for anything concrete it demands
   (a README, a specific entry point, a licence, a particular directory). Check
   what's mechanically checkable and present the rest as a short manual checklist
@@ -83,3 +84,13 @@ half unless the spec asks for a deployed URL.
 - If you can't route the submission to a spec node on the site, don't invent
   requirements — check the mechanical repo/deploy state and tell them to confirm
   the spec details against the assessment page.
+- This skill never flips a repo public. That is the one irreversible act in the
+  course, and it has exactly one entry point, so that the secret scan always
+  runs before it. Diagnose here; act in **ship**.
+
+## Hand off
+
+- "ready — now ship it" → **ship**
+- "what's due this week?" → **deadline-radar**
+- "start this week's prototype" → **new-week**
+- "is my machine set up right?" → **doctor**

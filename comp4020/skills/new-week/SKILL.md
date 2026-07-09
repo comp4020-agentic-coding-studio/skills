@@ -2,18 +2,19 @@
 name: new-week
 description:
   Sets up a COMP4020/COMP8020 student's repo for a new weekly crit prototype —
-  creates it from that week's starter template, carries their CLAUDE.md /
-  AGENTS.md harness forward from last week, and helps them keep or switch stack.
-  Use at the start of a crit week, or when the user asks to "start this week's
-  prototype", "set up week N", "make a new prototype repo", or "carry my
-  CLAUDE.md forward".
+  clones the repo the course provisioned for them from that week's starter
+  template, carries their CLAUDE.md / AGENTS.md harness forward from last week,
+  and helps them keep or switch stack. Use at the start of a crit week, or when
+  the user asks to "start this week's prototype", "set up week N", "clone this
+  week's repo", or "carry my CLAUDE.md forward".
 ---
 
 # COMP4020 new week
 
-Each weekly prototype is its own repo, created from that week's starter
-template. The isolation is deliberate: a clean thing to fork, a live URL per
-week, and a bad `git reset` that can only ever cost you one week.
+Each weekly prototype is its own repo, generated for you from that week's
+starter template and waiting in the course org. The isolation is deliberate: a
+clean thing to fork, a live URL per week, and a bad `git reset` that can only
+ever cost you one week.
 
 What shouldn't reset is the **harness**. The `CLAUDE.md` you grow to direct the
 agent is meant to accumulate across the whole course, and the gap between the
@@ -45,11 +46,13 @@ rather than guessing a name.
 
 ## 2. Find last week's harness
 
-The previous prototype repo is where `CLAUDE.md` and `AGENTS.md` come from. List
-the student's repos (`gh repo list --limit 50 --json name,createdAt,isPrivate`)
-and find the most recent prototype. Match the naming convention they've actually
-been using, and **confirm the repo with them before reading it** — a harness
-carried forward from the wrong repo is worse than no harness.
+The previous prototype repo is where `CLAUDE.md` and `AGENTS.md` come from.
+Every repo lives in the course org and is named `<prefix>-<handle>`, so list
+them with
+`gh repo list comp4020-agentic-coding-studio --limit 100 --json name,createdAt`
+and pick the most recent one ending in the student's own handle
+(`gh api /user --jq .login`). **Confirm the repo with them before reading it** —
+a harness carried forward from the wrong repo is worse than no harness.
 
 If this is their first prototype, there's nothing to carry. The template's
 boilerplate is the starting point; say so and skip to step 4.
@@ -74,18 +77,26 @@ deploys to that week's target. Ask once, and make the choice explicit:
 contract with the marker. A student who drags last week's source along ends up
 presenting last week's work.
 
-## 4. Create the repo
+## 4. Clone the repo
+
+Your repo already exists. The course generates one per student per deliverable,
+from that week's template, owned by the org and named `<prefix>-<handle>`. You
+are its admin — you can flip it public and enable Pages at the cutoff — but you
+don't create it, and you can't create repos in the org.
 
 ```sh
-gh repo create <name> --template <template> --private --clone
+gh repo clone comp4020-agentic-coding-studio/<prefix>-<handle>
 ```
 
-**Private, always.** The repo goes public at the cutoff and not before — until
-then peers can't read your source, your prompts or your harness. Flipping it is
-a deliberate act two hours before the crit, not something this skill does early.
+**Private, always.** It arrives private and goes public at the cutoff, not
+before — until then peers can't read your source, your prompts or your harness.
+Flipping it is a deliberate act two hours before the crit, and it belongs to
+**ship**, not to this skill.
 
-For the name, follow the convention the student's existing repos already use. If
-they have none, propose one and confirm it before creating.
+If the repo isn't there, don't invent one. Either the week hasn't been
+provisioned yet, or you haven't accepted your invitation to the
+`comp4020-agentic-coding-studio` org (check `gh api /user/memberships/orgs`;
+those invitations lapse after seven days). Say which, and stop.
 
 ## 5. Merge the harness
 
@@ -122,11 +133,11 @@ honest answer to "where did this CLAUDE.md come from".
 
 ## Notes
 
-- Confirm before creating a repo or pushing. Creating one is cheap; creating the
-  wrong one, under the wrong name, in the wrong org, is a mess to unwind two
-  hours before a crit.
-- If they've already made this week's repo, don't make a second. Offer to run
-  the harness merge into what they have.
+- Confirm before pushing, and never `gh repo create`. The course provisions the
+  repos; a repo you make yourself is in the wrong place, under the wrong owner,
+  and is not the one your tutor will mark.
+- If they've already cloned this week's repo, don't clone a second copy. Offer
+  to run the harness merge into what they have.
 - Assignment repos (A1, A2, A3) have the same anatomy, and the harness carries
   into them the same way. If a student asks, do it — just don't invent a brief
   or a due date that the site doesn't state.
@@ -135,4 +146,5 @@ honest answer to "where did this CLAUDE.md come from".
 
 - "what's due this week?" → **deadline-radar**
 - "am I ready to submit?" → **submission-preflight**
+- "make it public and deploy it" → **ship**
 - "is my machine set up right?" → **doctor**

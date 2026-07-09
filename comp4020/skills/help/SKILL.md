@@ -21,11 +21,12 @@ matches a skill's job.
 | First-time setup — getting your strproxy key working in Claude Code         | **quickstart**           |
 | Whether your machine is set up right (Git, `gh`, flyctl, Chrome, the proxy) | **doctor**               |
 | What's due / what to work on this week                                      | **deadline-radar**       |
-| Starting a new week's prototype repo, carrying your CLAUDE.md forward       | **new-week**             |
+| Cloning this week's prototype repo, carrying your CLAUDE.md forward         | **new-week**             |
 | Whether your work is ready to submit before a deadline                      | **submission-preflight** |
+| Making your repo public and getting it deployed at the cutoff               | **ship**                 |
 
 A natural first-week path is **quickstart** → **doctor**; a natural crit-week
-path is **deadline-radar** → **new-week** → **submission-preflight**.
+path is **deadline-radar** → **new-week** → **submission-preflight** → **ship**.
 
 All course facts come from the live site
 (`https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio`) and the
