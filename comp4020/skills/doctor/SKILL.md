@@ -6,8 +6,10 @@ description:
   GitHub org, flyctl, Claude Code's proxy config, Chrome, mise — including
   whether the tools that talk to external services (gh, flyctl, the strproxy
   key) are actually authenticated and working, and offers to fix what's broken.
-  Use whenever the user asks to check their setup, "is everything installed",
-  "why isn't gh/fly/claude working", "am I in the course GitHub org", or wants a
+  Also diagnoses the optional budget status line and its dependencies. Use
+  whenever the user asks to check their setup, "is everything installed", "why
+  isn't gh/fly/claude working", "am I in the course GitHub org", "why is my
+  status line empty / stuck / not showing my budget", or wants a
   setup/environment health check.
 ---
 
@@ -138,6 +140,43 @@ routed through the course proxy and the key works:
   in default/plan mode, mention auto mode as a flow improvement (not a FAIL).
   Never nudge toward `--dangerously-skip-permissions`.
 - Never print the key value back to the user.
+
+### Budget status line (optional)
+
+Opt-in, so **absence is not a failure**. If `~/.claude/settings.json` has no
+`statusLine` block and no `~/.claude/comp4020/` directory, the student never
+asked for it: say nothing and move on. Only diagnose it if they've turned it on,
+or if they're asking why it isn't working.
+
+Once it _is_ on, the failure modes are quiet — an empty or frozen bar, never an
+error. Check in this order:
+
+- **`jq` installed?** `command -v jq`. This is the one dependency that isn't
+  already on a stock macOS or minimal Ubuntu, and without it the bar reads
+  `budget: needs jq`. WARN, not FAIL. Fix: `brew install jq` (macOS),
+  `sudo apt install jq` (Debian/Ubuntu/WSL), or `mise use -g jq` (any platform,
+  and mise is already recommended below).
+- **Script installed and executable?**
+  `test -x ~/.claude/comp4020/statusline.sh`. If the directory exists but the
+  script doesn't, the `SessionStart` hook hasn't run yet — restarting Claude
+  Code installs it. If that doesn't fix it, the plugin isn't enabled:
+  `/plugin install comp4020@comp4020`.
+- **`settings.json` points at it?** The `statusLine.command` should be
+  `$HOME/.claude/comp4020/statusline.sh`. A student who already had their own
+  status line may have it pointing elsewhere — that's fine and deliberate; check
+  whether their script calls ours (see the **quickstart** skill, step 6).
+- **Native Windows** — there's no Unix shell to run it in. Not a FAIL; it's the
+  same WSL2 story as everything else.
+
+Two symptoms worth naming, because neither is a broken setup:
+
+- **`budget: ?`** means the script has never once reached `/api/me`. Nearly
+  always the ANU VPN, exactly as with the live probe above. Their Claude
+  sessions are unaffected.
+- **A number that won't move.** Expected: the figure is cached for 60 seconds
+  and refreshed in the background, so it always lags a little. Off the VPN it
+  will sit on the last figure it managed to fetch, indefinitely. If they want
+  the authoritative number now, that's the **check-balance** skill.
 
 ### Chrome ≥ 140 (required)
 

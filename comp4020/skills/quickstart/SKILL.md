@@ -4,10 +4,13 @@ description:
   Walks a new COMP4020/COMP8020 student through first-time setup end to end —
   configuring their Claude Code strproxy API key (checking whether it's already
   set, guiding them to the key on Canvas, writing it safely into
-  ~/.claude/settings.json, verifying the round-trip) and accepting their
-  invitation to the course GitHub org. Use for first-time setup, quickstart,
-  "set up my key", "Claude Code isn't using the course proxy", "join the course
-  GitHub org", or "how do I get started".
+  ~/.claude/settings.json, verifying the round-trip), accepting their invitation
+  to the course GitHub org, and optionally turning on the budget status line.
+  Each step is independently re-runnable, so a student who is already set up can
+  come back for just one of them. Use for first-time setup, quickstart, "set up
+  my key", "Claude Code isn't using the course proxy", "join the course GitHub
+  org", "how do I get started", "install the status line", "show my budget in
+  the status line", or "turn off the status line".
 ---
 
 # COMP4020 quickstart: get your key working
@@ -16,14 +19,26 @@ Get a student from nothing to a working, proxy-routed Claude Code. The end state
 is `~/.claude/settings.json` carrying the course proxy base URL and their `sk-…`
 key, verified with a live call.
 
+## 0. What did they actually ask for?
+
+The steps below are independent and safe to re-run. A student who asks for one
+thing should get that thing, not the whole tour:
+
+- "install the status line" / "show my budget in the status line" / "turn the
+  status line off" → **step 6**, and stop.
+- "join the GitHub org" → **step 5**, and stop.
+- anything open-ended ("set me up", "how do I get started") → start at step 1
+  and work down.
+
 ## 1. Is it already set up?
 
 Check before touching anything:
 
 - Are `ANTHROPIC_BASE_URL` and `ANTHROPIC_AUTH_TOKEN` already in the environment
   or in `~/.claude/settings.json` under `env`?
-- If so, verify rather than reconfigure — jump to step 4. If it verifies,
-  they're done; say so and stop.
+- If so, verify rather than reconfigure — jump to step 4. If it verifies, the
+  key half is done: don't re-ask for it, don't rewrite settings. Move on to
+  step 5.
 
 ## 2. Get the key from Canvas
 
@@ -123,7 +138,78 @@ there, no invitation is outstanding, and that's a convenor issue:
 comp4020@anu.edu.au. Don't send them emailing about a problem on their own
 laptop.
 
-## 6. Hand off
+## 6. Optional: your budget in the status line
+
+Offer this once the key verifies — never install it unasked. It puts the week's
+spend at the bottom of every Claude Code session, green → amber → red as the cap
+approaches:
+
+```
+$41.20/$100 (41%)
+```
+
+**It needs `jq`** (and `curl`, which every supported platform already has).
+Check with `command -v jq`; if it's missing, install it before going further:
+`brew install jq` on macOS, `sudo apt install jq` on Debian/Ubuntu/WSL, or
+`mise use -g jq` anywhere. Without `jq` the bar just reads `budget: needs jq`.
+
+It's a Unix shell script: macOS, Linux and WSL. On native Windows there's
+nothing to install — that's the WSL2 nudge the **doctor** skill already gives.
+
+To install:
+
+1. Create the opt-in directory and copy in the script the plugin ships:
+
+   ```sh
+   mkdir -p ~/.claude/comp4020
+   src=$(ls -t ~/.claude/plugins/cache/*/comp4020/*/scripts/statusline.sh 2>/dev/null | head -1)
+   [ -n "$src" ] && cp "$src" ~/.claude/comp4020/statusline.sh &&
+     chmod +x ~/.claude/comp4020/statusline.sh
+   ```
+
+   If `src` comes back empty, don't hunt for it — creating the directory is
+   enough. A `SessionStart` hook in this plugin copies the script in on their
+   next session, and keeps it current after every plugin update.
+
+2. Merge this into `~/.claude/settings.json` — **the same merge-never-clobber
+   rule as step 3**:
+
+   ```json
+   {
+     "statusLine": {
+       "type": "command",
+       "command": "$HOME/.claude/comp4020/statusline.sh"
+     }
+   }
+   ```
+
+   If they **already have a `statusLine`**, leave it alone and say so. The
+   script reads nothing from stdin, so their existing one can append its output
+   instead:
+
+   ```sh
+   printf ' %s' "$("$HOME/.claude/comp4020/statusline.sh" </dev/null)"
+   ```
+
+3. Tell them it appears in **new** sessions, not this one.
+
+What to say if they ask how it works, or why the number looks stale:
+
+- It reads a cached figure and refreshes at most once a minute in the
+  background, so it never slows a session down or hammers the proxy — the number
+  can lag real spend by up to a minute, on top of the proxy's own
+  eventually-consistent accounting. It's an indicator, not a ledger; for the
+  authoritative figure use **check-balance**.
+- `/api/me` is ANU-network-only, so off the VPN it keeps showing the last figure
+  it managed to fetch. `budget: ?` means it has never reached the proxy — the
+  usual cause is being off the VPN, and their Claude sessions still work fine.
+- A key with no cap (rare) shows `$3.50 this week` and no percentage.
+
+To turn it off: delete the `statusLine` block from `~/.claude/settings.json`.
+`rm -rf ~/.claude/comp4020` as well if they want the hook to stop reinstalling
+the script.
+
+## 7. Hand off
 
 Once the key verifies and the org membership is `active`, offer to run the
 **doctor** skill to check the rest of the environment (Git, `gh`, flyctl,

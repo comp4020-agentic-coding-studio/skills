@@ -51,8 +51,15 @@ it directly with `/comp4020:check-balance`.
 Walks a first-time student through getting their strproxy key working in Claude
 Code: checks whether it's already set, points them at the key on Canvas, merges
 it safely into `~/.claude/settings.json` (never clobbering existing settings,
-never echoing the key), and verifies the round-trip. Invoke with
-`/comp4020:quickstart` or ask to "set up my key".
+never echoing the key), and verifies the round-trip. Also joins the course
+GitHub org, and optionally installs the **budget status line** — the week's
+spend against the cap, live at the bottom of every session, coloured as the cap
+approaches. Each step re-runs independently, so `/comp4020:quickstart` later
+with "install the status line" does just that. Or ask to "set up my key".
+
+The status line reads a cached figure and refreshes in the background at most
+once a minute, so it never slows a session down or hammers the proxy. It needs
+`jq`, and a Unix shell — macOS, Linux, WSL.
 
 ### doctor
 
@@ -60,8 +67,9 @@ A smart setup check. Reads the course's required-tools list live from the site,
 then checks the student's machine — Git, the GitHub CLI (`gh`) and its auth,
 flyctl and its auth/org membership, the Claude Code proxy config and a live
 `/api/me` probe (which doubles as an "am I on the VPN?" check), Chrome version,
-mise — and **offers to fix** what's broken, confirming each step. Invoke with
-`/comp4020:doctor` or ask "is my setup right?".
+mise, and the budget status line and its dependencies — and **offers to fix**
+what's broken, confirming each step. Invoke with `/comp4020:doctor` or ask "is
+my setup right?" / "why is my status line empty?".
 
 ### deadline-radar
 
