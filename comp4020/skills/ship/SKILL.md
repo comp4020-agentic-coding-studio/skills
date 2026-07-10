@@ -29,9 +29,11 @@ not the one your tutor marks, and shipping it publishes work to a place nobody
 is looking.
 
 Then identify the deliverable and quote its real cutoff from the course site
-(the same `/api/index.json` route **course-info** uses). Shipping after the
-cutoff is allowed and shipping early costs nothing, but the student should hear
-the actual time out loud before anything becomes public.
+(the same `/api/index.json` route **course-info** uses). For a crit the cutoff
+is group-relative — resolve it from `$COMP4020_GROUP` and the crit agents page's
+group ↔ session table, exactly as **submission-preflight** does. Shipping after
+the cutoff is allowed and shipping early costs nothing, but the student should
+hear the actual time out loud before anything becomes public.
 
 ## 2. Is it even ready?
 

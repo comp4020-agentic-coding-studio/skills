@@ -5,12 +5,14 @@ description:
   configuring their Claude Code strproxy API key (checking whether it's already
   set, guiding them to the key on Canvas, writing it safely into
   ~/.claude/settings.json, verifying the round-trip), accepting their invitation
-  to the course GitHub org, and optionally turning on the budget status line.
-  Each step is independently re-runnable, so a student who is already set up can
-  come back for just one of them. Use for first-time setup, quickstart, "set up
-  my key", "Claude Code isn't using the course proxy", "join the course GitHub
-  org", "how do I get started", "install the status line", "show my budget in
-  the status line", or "turn off the status line".
+  to the course GitHub org, recording their studio group so deadline-aware
+  skills can quote their real cutoff, and optionally turning on the budget
+  status line. Each step is independently re-runnable, so a student who is
+  already set up can come back for just one of them. Use for first-time setup,
+  quickstart, "set up my key", "Claude Code isn't using the course proxy", "join
+  the course GitHub org", "how do I get started", "set my studio group", "which
+  group am I in", "install the status line", "show my budget in the status
+  line", or "turn off the status line".
 ---
 
 # COMP4020 quickstart: get your key working
@@ -25,7 +27,8 @@ The steps below are independent and safe to re-run. A student who asks for one
 thing should get that thing, not the whole tour:
 
 - "install the status line" / "show my budget in the status line" / "turn the
-  status line off" → **step 6**, and stop.
+  status line off" → **step 7**, and stop.
+- "set my studio group" / "my cutoff is wrong" → **step 6**, and stop.
 - "join the GitHub org" → **step 5**, and stop.
 - anything open-ended ("set me up", "how do I get started") → start at step 1
   and work down.
@@ -138,7 +141,33 @@ there, no invitation is outstanding, and that's a convenor issue:
 comp4020@anu.edu.au. Don't send them emailing about a problem on their own
 laptop.
 
-## 6. Optional: your budget in the status line
+## 6. Record your studio group
+
+The crit cutoff is two hours before **your group's** session, so it's a
+different time for every group — and the skills that quote deadlines
+(**submission-preflight**, **ship**, **deadline-radar**) can only name your
+actual cutoff if they know which group you're in. Ask. Students know their group
+by its agent's name — Shitao, Bada, Baishi, Dachi, Yunlin or Liuru — and the
+[crit agents page](https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/topics/crit-agents/)
+maps names to session times if they only know their timetable slot.
+
+Merge it into `~/.claude/settings.json` under `env`, with the same
+merge-never-clobber rule as step 3:
+
+```json
+{
+  "env": {
+    "COMP4020_GROUP": "baishi"
+  }
+}
+```
+
+Lowercase, one of the six agent names. Claude Code applies `env` entries to
+every new session on every platform, so skills just read `$COMP4020_GROUP` — no
+per-OS config file to manage. Takes effect in new sessions, like everything else
+in this file. A student who switches groups mid-semester re-runs this step.
+
+## 7. Optional: your budget in the status line
 
 Offer this once the key verifies — never install it unasked. It puts the week's
 spend at the bottom of every Claude Code session, green → amber → red as the cap
@@ -226,7 +255,7 @@ also stop the hook reinstalling the script,
 `rm -rf ~/.claude/comp4020`. The `comp4020` skills plugin is unaffected either
 way.
 
-## 7. Hand off
+## 8. Hand off
 
 Once the key verifies and the org membership is `active`, offer to run the
 **doctor** skill to check the rest of the environment (Git, `gh`, flyctl,

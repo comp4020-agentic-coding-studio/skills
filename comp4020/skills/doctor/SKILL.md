@@ -141,6 +141,17 @@ routed through the course proxy and the key works:
   Never nudge toward `--dangerously-skip-permissions`.
 - Never print the key value back to the user.
 
+### Studio group (recommended)
+
+- `COMP4020_GROUP` set — in the environment, backed by `~/.claude/settings.json`
+  under `env` — and equal to one of the six agent names (`shitao`, `bada`,
+  `baishi`, `dachi`, `yunlin`, `liuru`, lowercase)? Missing or misspelled is a
+  WARN, not a FAIL: nothing breaks, but the deadline-aware skills
+  (**submission-preflight**, **ship**, **deadline-radar**) can only say "two
+  hours before your session" instead of quoting the student's actual crit
+  cutoff. Fix: the **quickstart** skill, step 6 (ask which group, merge the
+  variable into settings).
+
 ### Budget status line (optional)
 
 Opt-in, so **absence is not a failure**. If `~/.claude/settings.json` has no
@@ -170,7 +181,7 @@ error. Check in this order:
   write this (no plugin can set `statusLine`), so this is the step people miss.
   A student who already had their own status line may have it pointing elsewhere
   — that's fine and deliberate; check whether their script calls ours (see the
-  **quickstart** skill, step 6).
+  **quickstart** skill, step 7).
 - **Routed through strproxy?** The script stays silent unless
   `ANTHROPIC_BASE_URL` names the strproxy host and `ANTHROPIC_AUTH_TOKEN` holds
   a virtual key — by design, so it never sends a credential to a host it wasn't

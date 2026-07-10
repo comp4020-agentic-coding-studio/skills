@@ -56,8 +56,13 @@ break, then 6 more):
 the plugin is reused for a new offering; it's the one course-instance fact this
 skill hard-codes because the site's API exposes week numbers, not dates.
 
-A crit in week N happens during the week beginning at that Monday. Give the
-Monday as the date unless the crit's own page `body` names a specific day/time.
+A crit in week N happens during the week beginning at that Monday. If
+`$COMP4020_GROUP` is set (see **quickstart**), do better than the Monday:
+resolve the student's session day/time from the group ↔ session table on the
+crit agents page (`/api/topics/crit-agents.json`) and quote the deadline that
+actually binds — the cutoff, two hours before that session. If it's unset, give
+the Monday, and mention that setting their group (quickstart, step 6) gets exact
+times.
 
 ## 4. Order and bucket
 
