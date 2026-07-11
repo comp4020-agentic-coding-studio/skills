@@ -89,6 +89,13 @@ Notes:
   common cause of a "revoked-looking" key that's actually fine.
 - **Never echo the key back** in your response, and never suggest sending it
   anywhere except the strproxy host.
+- **The key never goes in a repo.** `~/.claude/settings.json` sits outside every
+  repo, which is the point. The course template repos also ship a pre-commit
+  hook (activated by `pnpm install`) that blocks any commit containing something
+  key-shaped — if a student hits that block, the fix is to take the key out of
+  the file (env var or an untracked `.env`, which the templates already
+  gitignore), never `git commit --no-verify`. A key that has already been pushed
+  is leaked: private Ed thread to the teaching team to get it rotated.
 
 For a project-specific key instead of the user-wide one, the same block goes in
 `.claude/settings.local.json` at the project root (project settings override

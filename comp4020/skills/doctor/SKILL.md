@@ -6,11 +6,12 @@ description:
   GitHub org, flyctl, Claude Code's proxy config, Chrome, mise — including
   whether the tools that talk to external services (gh, flyctl, the strproxy
   key) are actually authenticated and working, and offers to fix what's broken.
-  Also diagnoses the optional budget status line and its dependencies. Use
-  whenever the user asks to check their setup, "is everything installed", "why
-  isn't gh/fly/claude working", "am I in the course GitHub org", "why is my
-  status line empty / stuck / not showing my budget", or wants a
-  setup/environment health check.
+  Inside a course prototype repo it also checks the template's pre-commit key
+  guard is active and that no API key has been committed. Also diagnoses the
+  optional budget status line and its dependencies. Use whenever the user asks
+  to check their setup, "is everything installed", "why isn't gh/fly/claude
+  working", "am I in the course GitHub org", "why is my status line empty /
+  stuck / not showing my budget", or wants a setup/environment health check.
 ---
 
 # COMP4020 environment doctor
@@ -140,6 +141,23 @@ routed through the course proxy and the key works:
   in default/plan mode, mention auto mode as a flow improvement (not a FAIL).
   Never nudge toward `--dangerously-skip-permissions`.
 - Never print the key value back to the user.
+
+### Pre-commit key guard (required, repo-scoped)
+
+Only applies when the current directory is inside a course prototype repo — one
+whose root has a `.githooks/pre-commit` (every course template ships it, to
+block commits that contain anything shaped like an API key). Outside such a
+repo, skip silently: there's nothing to check.
+
+- `git config core.hooksPath` should print `.githooks`. The template's `prepare`
+  script sets this when `pnpm install` runs, so unset means they haven't
+  installed yet and the guard is **off** — FAIL. Fix: `pnpm install` (which they
+  need anyway), or directly `git config core.hooksPath .githooks`.
+- While you're there, check nothing key-shaped is already committed:
+  `git grep --cached -nE 'sk-[A-Za-z0-9_-]{20,}'`. Any hit is FAIL. Report the
+  file and line **only — never print the matched value**. The key has to come
+  out of the file, and if the commit has ever been pushed, treat the key as
+  leaked: private Ed thread to the teaching team to get it rotated.
 
 ### Crit group (recommended)
 
