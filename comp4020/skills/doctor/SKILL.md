@@ -26,7 +26,7 @@ The canonical list of required and recommended tools lives on the course site,
 so fetch it rather than trusting this file to stay current:
 
 ```
-https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/api/topics/software-environment.json
+https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/api/topics/software-and-platforms.json
 ```
 
 Read its `body`. The checks below cover every tool that page currently lists. If
@@ -44,7 +44,7 @@ Run `uname -s` (and check for WSL). Tailor every check and fix to the result:
 - **WSL** (`Linux` with `microsoft` in `/proc/version`) — treat as Linux; this
   is the supported Windows path.
 - **Native Windows** (no Unix shell) — this is off the supported path. Point at
-  the WSL2 warning on the software-environment page and recommend installing
+  the WSL2 warning on the software-and-platforms page and recommend installing
   WSL2 before going further; most other checks won't apply cleanly.
 
 ## Checks
@@ -106,13 +106,13 @@ full-stack half of the course; in the static half a missing flyctl is a WARN
 - `flyctl auth whoami` — logged in?
 - `flyctl orgs list` — are they a member of the course-managed org? The org name
   is on the
-  [platforms](https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/topics/platforms/)
+  [software and platforms](https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/topics/software-and-platforms/)
   page; fetch it if you need to name the expected org. Not being in it is a WARN
   (they may not have accepted the invite yet).
 - **Payment method**: the course covers billing, so students must not add their
   own card. There's no reliable CLI check for this, so don't assert it — just
   remind them, if flyctl is set up, not to add a payment method and to point any
-  billing prompts at the platforms page.
+  billing prompts at the software-and-platforms page.
 - Fixes: `flyctl auth login`; for org membership, check for the invite email or
   contact the convenor.
 
