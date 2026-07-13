@@ -3,23 +3,27 @@ name: quickstart
 description:
   Walks a new COMP4020/COMP8020 student through first-time setup end to end —
   configuring their Claude Code strproxy API key (checking whether it's already
-  set, guiding them to the key on Canvas, writing it safely into
-  ~/.claude/settings.json, verifying the round-trip), accepting their invitation
-  to the course GitHub org, recording their crit group so deadline-aware skills
-  can quote their real cutoff, and optionally turning on the budget status line.
+  set, guiding them to the key on Canvas, writing it safely into settings —
+  user-global, or scoped to course repos for students with their own Claude
+  subscription — and verifying the round-trip), accepting their invitation to
+  the course GitHub org, recording their crit group so deadline-aware skills can
+  quote their real cutoff, and optionally turning on the budget status line.
   Each step is independently re-runnable, so a student who is already set up can
   come back for just one of them. Use for first-time setup, quickstart, "set up
   my key", "Claude Code isn't using the course proxy", "join the course GitHub
   org", "how do I get started", "set my crit group" (or "studio group"), "which
   group am I in", "install the status line", "show my budget in the status
-  line", or "turn off the status line".
+  line", "turn off the status line", "I have my own Claude subscription", "use
+  my course credits in this repo", or "why does my status line say own plan".
 ---
 
 # COMP4020 quickstart: get your key working
 
 Get a student from nothing to a working, proxy-routed Claude Code. The end state
-is `~/.claude/settings.json` carrying the course proxy base URL and their `sk-…`
-key, verified with a live call.
+is settings carrying the course proxy base URL and their `sk-…` key — in
+`~/.claude/settings.json` for most students, or scoped to their course repos if
+they have their own Claude plan (step 3 decides which) — verified with a live
+call.
 
 ## 0. What did they actually ask for?
 
@@ -28,6 +32,9 @@ thing should get that thing, not the whole tour:
 
 - "install the status line" / "show my budget in the status line" / "turn the
   status line off" → **step 7**, and stop.
+- "use my course credits in this repo" / "why does my status line say own plan
+  in here" → **step 3**, dual-plan branch, and stop. (This is the weekly re-run
+  for dual-plan students in a fresh course repo.)
 - "set my crit group" / "my cutoff is wrong" → **step 6**, and stop.
 - "join the GitHub org" → **step 5**, and stop.
 - anything open-ended ("set me up", "how do I get started") → start at step 1
@@ -38,7 +45,9 @@ thing should get that thing, not the whole tour:
 Check before touching anything:
 
 - Are `ANTHROPIC_BASE_URL` and `ANTHROPIC_AUTH_TOKEN` already in the environment
-  or in `~/.claude/settings.json` under `env`?
+  or in `~/.claude/settings.json` under `env`? For a dual-plan student they may
+  instead be in `.claude/settings.local.json` at a course repo's root — check
+  there too if the current directory is inside one.
 - If so, verify rather than reconfigure — jump to step 4. If it verifies, the
   key half is done: don't re-ask for it, don't rewrite settings. Move on to
   step 5.
@@ -64,9 +73,25 @@ Ask them to paste the key when they have it.
 
 ## 3. Write it into settings safely
 
-Target `~/.claude/settings.json`. **Merge, never clobber** — read the existing
-file first (it may already hold other settings), add or update just the two keys
-inside the `env` object, and write it back as valid JSON:
+**First, ask one question: do they have their own Claude subscription (Pro or
+Max) or a personal Anthropic API key that they use outside this course?** The
+answer decides where the key goes:
+
+- **No — the course key is their only Claude access** (most students): write it
+  user-global, into `~/.claude/settings.json`. Every session everywhere runs on
+  course credits, which is exactly right for them.
+- **Yes — they have their own plan**: scope the course key to course repos
+  instead (the **dual-plan branch** below). Written user-global, these two env
+  vars silently take over their personal subscription in _every_ project — they
+  would burn course credits on their own side projects while their paid plan sat
+  unused. If they've already done the global setup and then mention a personal
+  plan, the fix is a move, not a copy: delete the two vars from
+  `~/.claude/settings.json`, then set up the repo-scoped version.
+
+Either way the block is the same, and the rule is the same: **merge, never
+clobber** — read the existing file first (it may already hold other settings),
+add or update just the two keys inside the `env` object, and write it back as
+valid JSON:
 
 ```json
 {
@@ -97,9 +122,32 @@ Notes:
   gitignore), never `git commit --no-verify`. A key that has already been pushed
   is leaked: private Ed thread to the teaching team to get it rotated.
 
-For a project-specific key instead of the user-wide one, the same block goes in
-`.claude/settings.local.json` at the project root (project settings override
-user settings) — offer this only if they ask.
+### The dual-plan branch: scope the key to course repos
+
+For a student with their own Claude plan, the same `env` block goes in
+`.claude/settings.local.json` at the **course repo's root** instead of
+`~/.claude/settings.json`. Project settings override user settings, so inside
+the repo every session runs on course credits; everywhere else Claude Code falls
+back to their own subscription or key, untouched. Claude Code keeps
+`settings.local.json` out of version control automatically, and the template
+pre-commit key guard backstops it — but it's still a file inside a repo, so
+double-check it's ignored (`git check-ignore .claude/settings.local.json`)
+before writing the key into it.
+
+Course repos arrive weekly, so this step repeats: in each fresh repo, "use my
+course credits in this repo" re-runs just this branch. The key is the same one
+every time — copy the `env` block across from last week's repo rather than
+sending the student back to Canvas.
+
+Two things to tell them once:
+
+- The settings are read when a session starts, so which credits a session uses
+  is decided by **where it was launched**, not where they `cd` afterwards. Start
+  a fresh `claude` inside the course repo for course work.
+- The status line (step 7) is how they see the split at a glance:
+  `comp4020 $41.20/$100 (41%)` in a course repo, a dim `own plan` everywhere
+  else. For a dual-plan student, offer it more strongly than usual — it's the
+  ambient "which wallet is this session burning" indicator.
 
 ## 4. Verify the round-trip
 
@@ -117,8 +165,10 @@ Two independent confirmations:
   means the key didn't take — recheck the paste (step 3), then Canvas (step 2).
 - **Claude Code itself routes through the proxy**: note that the setting takes
   effect for _new_ sessions. `claude --print "say hi"` in a fresh shell is the
-  canonical smoke test; the current session may need a restart to pick up a
-  newly written `settings.json`.
+  canonical smoke test; the current session may need a restart to pick up newly
+  written settings. On the dual-plan setup, run it **from the course repo's
+  root** — that's where the settings live, and running it elsewhere tests their
+  personal plan instead.
 
 ## 5. Join the course GitHub org
 
@@ -184,8 +234,13 @@ spend at the bottom of every Claude Code session, green → amber → red as the
 approaches:
 
 ```
-$41.20/$100 (41%)
+comp4020 $41.20/$100 (41%)
 ```
+
+In a session that _isn't_ running on course credits (a personal subscription or
+key, or no key at all) it shows a dim `own plan` instead, so which wallet a
+session draws from is always visible. For a dual-plan student (step 3) that flip
+is the main reason to want it.
 
 **It needs `jq`** (and `curl`, which every supported platform already has).
 Check with `command -v jq`; if it's missing, install it before going further:
@@ -250,14 +305,16 @@ What to say if they ask how it works, or why the number looks stale:
   eventually-consistent accounting. It's an indicator, not a ledger; for the
   authoritative figure use **check-balance**.
 - `/api/me` is ANU-network-only, so off the VPN it keeps showing the last figure
-  it managed to fetch. `budget: ?` means it has never reached the proxy — the
-  usual cause is being off the VPN, and their Claude sessions still work fine.
-- A key with no cap (rare) shows `$3.50 this week` and no percentage.
-- It prints **nothing at all**, and contacts nobody, unless `ANTHROPIC_BASE_URL`
-  names the strproxy host and `ANTHROPIC_AUTH_TOKEN` holds a virtual key. A
-  student on their own Claude subscription, or pointed at some other gateway,
-  just sees an empty segment: the script won't send a credential to a host it
-  wasn't explicitly given.
+  it managed to fetch. `comp4020 budget: ?` means it has never reached the proxy
+  — the usual cause is being off the VPN, and their Claude sessions still work
+  fine. The `comp4020` tag itself never lies: if it's showing, the session is on
+  course credits, whatever the figure next to it says.
+- A key with no cap (rare) shows `comp4020 $3.50 this week` and no percentage.
+- It contacts nobody unless `ANTHROPIC_BASE_URL` names the strproxy host and
+  `ANTHROPIC_AUTH_TOKEN` holds a virtual key — the script won't send a
+  credential to a host it wasn't explicitly given. In that case it prints the
+  dim `own plan` tag instead: the session is running on the student's own
+  subscription, key, or gateway, not course credits.
 
 To turn it off: delete the `statusLine` block from `~/.claude/settings.json`. To
 also stop the hook reinstalling the script,

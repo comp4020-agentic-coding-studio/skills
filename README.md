@@ -50,11 +50,14 @@ it directly with `/comp4020:check-balance`.
 
 Walks a first-time student through getting their strproxy key working in Claude
 Code: checks whether it's already set, points them at the key on Canvas, merges
-it safely into `~/.claude/settings.json` (never clobbering existing settings,
-never echoing the key), and verifies the round-trip. Also joins the course
-GitHub org, and sets up the optional status line (below). Each step re-runs
-independently, so `/comp4020:quickstart` later with "install the status line"
-does just that. Or ask to "set up my key".
+it safely into settings (never clobbering existing settings, never echoing the
+key), and verifies the round-trip. Students with their own Claude subscription
+or API key get the dual-plan setup instead: the course key is scoped to course
+repos via `.claude/settings.local.json`, so course work runs on course credits
+and everything else stays on their own plan. Also joins the course GitHub org,
+and sets up the optional status line (below). Each step re-runs independently,
+so `/comp4020:quickstart` later with "install the status line" or "use my course
+credits in this repo" does just that. Or ask to "set up my key".
 
 ### doctor
 
@@ -102,9 +105,12 @@ Lists everything above and routes to the right skill. Invoke with
 
 ## The status line (a separate, optional plugin)
 
-`comp4020-statusline` puts your week's spend against the cap at the bottom of
-every Claude Code session — `$41.20/$100 (41%)`, green through amber to red as
-the cap approaches.
+`comp4020-statusline` shows which credits every Claude Code session is burning,
+at the bottom of the screen. On course credits it's your week's spend against
+the cap — `comp4020 $41.20/$100 (41%)`, green through amber to red as the cap
+approaches. In a session running on your own Claude subscription or API key
+instead, it reads `own plan` — so if you have both, one glance tells you which
+wallet the session draws from.
 
 ```
 claude plugin install comp4020-statusline@comp4020
@@ -122,5 +128,7 @@ existing status line.
 
 It reads a cached figure and refreshes in the background at most once a minute,
 so it never slows a session down or hammers the proxy — an indicator, not a
-ledger. It needs `jq` and a Unix shell (macOS, Linux, WSL), and it prints
-nothing, and contacts nobody, unless you're actually routed through strproxy.
+ledger. It needs `jq` and a Unix shell (macOS, Linux, WSL), and it contacts
+nobody unless you're actually routed through strproxy: the `own plan` tag is
+rendered entirely locally, and your own credentials are never sent anywhere they
+weren't already going.

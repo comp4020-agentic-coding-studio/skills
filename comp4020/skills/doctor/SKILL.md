@@ -124,9 +124,14 @@ routed through the course proxy and the key works:
 
 - `ANTHROPIC_BASE_URL` set to the strproxy host (default
   `https://strproxy.comp.anu.edu.au`) and `ANTHROPIC_AUTH_TOKEN` set to an
-  `sk-…` key? These normally live in `~/.claude/settings.json` under `env`.
-  Missing means they're either on their own Anthropic billing or unconfigured —
-  route them to the **quickstart** skill.
+  `sk-…` key? These normally live in `~/.claude/settings.json` under `env` — but
+  a student with their own Claude subscription scopes them to course repos
+  instead (quickstart step 3's dual-plan branch), so also check
+  `.claude/settings.local.json` at the repo root if the current directory is
+  inside a course repo. For a dual-plan student, the vars being absent _outside_
+  course repos is the setup working, not a failure. Missing in both places means
+  they're either on their own Anthropic billing everywhere or unconfigured — ask
+  which before routing them to the **quickstart** skill.
 - **Live probe**: `GET /api/me` with the key confirms three things at once — the
   key is valid, the proxy is reachable, and they're on the ANU network/VPN:
   ```sh
@@ -179,12 +184,18 @@ turned it on, or if they're asking why it isn't working. (Don't read
 `~/.claude/comp4020/` as consent — the plugin's hook creates that directory on
 install, before any status line exists.)
 
-Once it _is_ on, the failure modes are quiet — an empty or frozen bar, never an
-error. Check in this order:
+Once it _is_ on, the script always prints one of two tags: `comp4020` followed
+by the budget when the session runs on course credits, or a dim `own plan` when
+it doesn't (personal subscription, personal key, another gateway). So the first
+diagnostic question is which of three states they're in: a **completely empty
+segment** means the script isn't running at all (plugin/script/settings — the
+middle checks below); **`own plan`** means the script works but the session
+isn't routed through strproxy; **`comp4020` with a stale or missing figure** is
+the quiet-failure territory (VPN, cache) at the end. Check in this order:
 
 - **`jq` installed?** `command -v jq`. This is the one dependency that isn't
   already on a stock macOS or minimal Ubuntu, and without it the bar reads
-  `budget: needs jq`. WARN, not FAIL. Fix: `brew install jq` (macOS),
+  `comp4020 budget: needs jq`. WARN, not FAIL. Fix: `brew install jq` (macOS),
   `sudo apt install jq` (Debian/Ubuntu/WSL), or `mise use -g jq` (any platform,
   and mise is already recommended below).
 - **Companion plugin installed?** The script ships in `comp4020-statusline`, a
@@ -200,19 +211,23 @@ error. Check in this order:
   A student who already had their own status line may have it pointing elsewhere
   — that's fine and deliberate; check whether their script calls ours (see the
   **quickstart** skill, step 7).
-- **Routed through strproxy?** The script stays silent unless
+- **Routed through strproxy?** The script shows the budget only when
   `ANTHROPIC_BASE_URL` names the strproxy host and `ANTHROPIC_AUTH_TOKEN` holds
   a virtual key — by design, so it never sends a credential to a host it wasn't
-  given. On someone's own Claude subscription there is nothing to show and an
-  empty segment is correct, not a fault.
+  given; otherwise it shows `own plan`. Whether `own plan` is correct depends on
+  the setup: on someone's own Claude subscription outside course work it's
+  exactly right, and for a dual-plan student it's right everywhere _except_
+  inside a course repo — seeing it there means the repo's
+  `.claude/settings.local.json` is missing (fresh weekly clone, usually) →
+  **quickstart** step 3, dual-plan branch.
 - **Native Windows** — there's no Unix shell to run it in. Not a FAIL; it's the
   same WSL2 story as everything else.
 
 Two symptoms worth naming, because neither is a broken setup:
 
-- **`budget: ?`** means the script has never once reached `/api/me`. Nearly
-  always the ANU VPN, exactly as with the live probe above. Their Claude
-  sessions are unaffected.
+- **`comp4020 budget: ?`** means the session is on course credits but the script
+  has never once reached `/api/me`. Nearly always the ANU VPN, exactly as with
+  the live probe above. Their Claude sessions are unaffected.
 - **A number that won't move.** Expected: the figure is cached for 60 seconds
   and refreshed in the background, so it always lags a little. Off the VPN it
   will sit on the last figure it managed to fetch, indefinitely. If they want
