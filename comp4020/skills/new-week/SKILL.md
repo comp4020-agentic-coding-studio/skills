@@ -2,52 +2,61 @@
 name: new-week
 description:
   Sets up a COMP4020/COMP8020 student's repo for a new weekly crit prototype —
-  clones the repo the course provisioned for them from that week's starter
-  template, carries their CLAUDE.md / AGENTS.md harness forward from last week,
-  and helps them keep or switch stack. Use at the start of a crit week, or when
-  the user asks to "start this week's prototype", "set up week N", "clone this
-  week's repo", or "carry my CLAUDE.md forward".
+  clones the repo the course provisioned for them, carries their CLAUDE.md /
+  AGENTS.md harness forward from last week, pulls the week's spec from the
+  course API, and helps them turn its checkable lines into tests. Use at the
+  start of a crit week, or when the user asks to "start this week's prototype",
+  "set up week N", "clone this week's repo", "pull this week's spec", or "carry
+  my CLAUDE.md forward".
 ---
 
 # COMP4020 new week
 
-Each weekly prototype is its own repo, generated for you from that week's
-starter template and waiting in the course org. The isolation is deliberate: a
-clean thing to fork, a live URL per week, and a bad `git reset` that can only
-ever cost you one week.
+Each weekly prototype is its own repo, generated for you from the course starter
+template and waiting in the course org. The isolation is deliberate: a clean
+thing to fork, a live URL per week, and a bad `git reset` that can only ever
+cost you one week.
 
-What shouldn't reset is the **harness**. The `CLAUDE.md` you grow to direct the
-agent is meant to accumulate across the whole course, and the gap between the
-starter's boilerplate and your own version is read as evidence of how you work.
-This skill runs that transition: new repo from the template, harness carried
-forward, stack chosen on purpose rather than by default.
+The template is **identical for every deliverable** — what changes each week is
+the spec, and that lives on the course website, not in the repo. What shouldn't
+reset is the **harness**: the `CLAUDE.md` you grow to direct the agent is meant
+to accumulate across the whole course, and the gap between the starter's
+boilerplate and your own version is read as evidence of how you work. This skill
+runs that transition: new repo, harness carried forward, stack chosen on
+purpose, and the week's spec pulled and turned into your own tests.
 
-## 1. Which week, and which template?
+## 1. Which week, and which deliverable?
 
 Get the real date from the machine (`date +%Y-%m-%d`) — never assume it. Then
-fetch `/api/index.json` from the course site (base URL
-`https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio`) and find the
-crit for the current week. Read that node's own JSON for the `body`: it names
-what's being built and where it deploys.
+fetch `/api/crit-groups.json` from the course site (base URL
+`https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio`). Its
+`deliverables` array maps every crit and assessment to a `week` and a
+`repoPrefix`; the student's repo for a deliverable is `<repoPrefix>-<handle>`.
+Find the current week's entries, and read the deliverable's own JSON —
+`/api/crits/<slug>.json` for `kind: crit`, `/api/assessments/<slug>.json` for
+`kind: assessment` — for the `spec` (the published contract) and the `body` (the
+full brief).
 
-Not every week starts a fresh prototype. Before creating anything:
+Entries can share a prefix: the retro crits point at the assignment repo they
+demo, and the final project's repo (`comp4020-final`) serves the week 9–11 crits
+_and_ the A3 submission. Sharing a prefix means sharing a repo, so:
 
 - **weeks 4 and 7** are retro crits — you present the assignment that just
-  landed, so there's no new prototype. Say so and stop.
-- **week 9** starts the **final-project repo**: created from that week's starter
-  and carried through to the A3 deadline, with every late-crit week's spec tier
-  shipped in it up front. Run this skill for it as normal — harness carried
-  forward, stack chosen deliberately (this is the stack you'll justify in A3).
-- **weeks 10–11** run in that same repo. The crit deliverable is the in-flight
-  A3 through that week's lens, so there's no new repo and no harness to carry.
-  Say so and stop.
+  landed, so there's no new prototype and nothing to set up. Say so and stop.
+- **week 9** starts the **final-project repo**: created once and carried through
+  to the A3 deadline. Run this skill for it as normal — harness carried forward,
+  stack chosen deliberately (this is the stack you'll justify in A3).
+- **weeks 10–11** run in that same repo: no new clone, no harness merge. Skip to
+  step 6 and pull _that week's_ crit spec into the repo you already have — new
+  tests alongside the old (don't delete a past week's), and a fresh reflection
+  entry at the cutoff.
 - **week 12** has no crit.
 
-The template follows the half of the course: the static half (weeks 2–6) uses
-`comp4020-agentic-coding-studio/template-static`; the full-stack half (week 8
-onwards) uses the full-stack template named on the crit page. Confirm the
-template exists with `gh repo view` before you rely on it. If you can't, ask
-rather than guessing a name.
+The template follows the half of the course — the static half (weeks 2–6) uses
+`comp4020-agentic-coding-studio/template-static`, the full-stack half (week 8
+onwards) uses the full-stack template — but within a half it's the same template
+every week; nothing about the deliverable is baked into it. You never choose a
+template: the course provisioned your repo from the right one.
 
 ## 2. Find last week's harness
 
@@ -77,17 +86,17 @@ deploys to that week's target. Ask once, and make the choice explicit:
   a legitimate answer in the static half.
 
 **Never carry forward** the prototype source (`index.html`, `main.js`,
-`styles.css`, components), the `spec/` directory, `PROCESS.md`, or
-`reflections/`. Each week answers a new provocation, and `spec/` is this week's
-contract with the marker. A student who drags last week's source along ends up
-presenting last week's work.
+`styles.css`, components), your spec tests from last week (the invariants ship
+with the template; the week tests answer last week's contract), `PROCESS.md`, or
+`reflections/`. Each week answers a new provocation. A student who drags last
+week's source along ends up presenting last week's work.
 
 ## 4. Clone the repo
 
 Your repo already exists. The course generates one per student per deliverable,
-from that week's template, owned by the org and named `<prefix>-<handle>`. You
-are its admin — you can flip it public and enable Pages at the cutoff — but you
-don't create it, and you can't create repos in the org.
+owned by the org and named `<prefix>-<handle>`. You are its admin — you can flip
+it public and enable Pages at the cutoff — but you don't create it, and you
+can't create repos in the org.
 
 ```sh
 gh repo clone comp4020-agentic-coding-studio/<prefix>-<handle>
@@ -113,17 +122,16 @@ yet. Say which of the two it is, and stop.
 ## 5. Merge the harness
 
 This is the part that matters, and it's a merge rather than a copy. The template
-ships its own boilerplate `CLAUDE.md`, and that boilerplate moves through the
-course — week 6's documents the accessibility and performance sensors that
-arrive with it. So:
+ships its own boilerplate `CLAUDE.md`, and that boilerplate can still evolve
+between weeks. So:
 
 - **diff** last week's `CLAUDE.md` against the template's, and show the student
   what differs before touching anything.
 - **keep every rule they added** — the conventions they hold the agent to, the
   corrections that stuck, the facts about the stack the agent kept getting
   wrong. That accretion is theirs, and it's assessed.
-- **take the template's new material** — new sensors, new sections, anything
-  describing this week's checks.
+- **take the template's new material** — new sections, anything describing the
+  checks that changed.
 - **drop only what no longer applies**, such as rules about a framework they've
   just switched away from. Ask first. A stale rule is much cheaper than a lost
   one.
@@ -133,13 +141,36 @@ before any prototype work, with a message that says where it came from
 (`harness: carry forward from week N`). The first commit in the repo is then an
 honest answer to "where did this CLAUDE.md come from".
 
-## 6. Land it
+## 6. Turn the spec into tests
+
+The week's published `spec` (step 1) is the contract the tutor verifies at the
+crit. Turning it into automated backpressure is the student's work — the
+template deliberately ships only the invariants (`spec/invariants.test.js`, true
+of any good website) and leaves the week's contract to them.
+
+Walk the spec with the student, line by line, and sort it:
+
+- **mechanically checkable** — "deployed and live", "the core flow persists
+  across a reload", "a navigation landmark". Write tests for these in their own
+  file alongside the invariants (any `spec/*.test.js` runs with `pnpm check`).
+  Assert the **contract** — what the page must do, not how it's built — so the
+  tests survive a change of approach, or of stack.
+- **judged by a person** — "the look commits to an era", "yours is better in
+  ways you can name". No test can hold these; name them out loud so the student
+  knows they're still on the hook for them at the crit.
+
+The new tests **start red** — there's no prototype yet, and that's the point.
+Red-to-green across the week is the work, and the commits that turn each one
+green are exactly the process evidence `PROCESS.md` wants to cite.
+
+## 7. Land it
 
 - install dependencies and run the checks (`pnpm check` in the static template).
-  Confirm green before the student starts, so a red check later is theirs and
-  not inherited.
-- read them `spec/README.md`, this week's brief, and stop there. Building the
-  prototype is their work, not yours.
+  The invariants and everything carried forward should be green before the
+  student starts — a red check later is then theirs, not inherited. Their fresh
+  spec tests are the exception: red is their starting state.
+- read them the week's spec and brief from the site, and stop there. Building
+  the prototype is their work, not yours.
 - remind them of the two things the checks can't enforce: commit as you go, and
   the repo stays private until the cutoff.
 
@@ -151,8 +182,9 @@ honest answer to "where did this CLAUDE.md come from".
 - If they've already cloned this week's repo, don't clone a second copy. Offer
   to run the harness merge into what they have.
 - Assignment repos (A1, A2, A3) have the same anatomy, and the harness carries
-  into them the same way. If a student asks, do it — just don't invent a brief
-  or a due date that the site doesn't state.
+  into them the same way — the spec pull too (`kind: assessment` in the
+  deliverables map). If a student asks, do it — just don't invent a brief or a
+  due date that the site doesn't state.
 
 ## Hand off
 

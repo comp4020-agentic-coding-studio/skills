@@ -55,6 +55,11 @@ Classify each PASS / WARN / FAIL:
   (a README, a specific entry point, a licence, a particular directory). Check
   what's mechanically checkable and present the rest as a short manual checklist
   rather than guessing pass/fail on prose requirements.
+- **Process evidence** — run `pnpm check:process` if the script exists. It
+  verifies the every-submission artefacts: `PROCESS.md` with its boilerplate
+  replaced and every cited commit resolving, a reflection entry in
+  `reflections/`, and `CLAUDE.md`. A failure here is a FAIL — these are read by
+  the marker on every deliverable.
 
 ## 3. Deploy checks (full-stack half, weeks 7+)
 
