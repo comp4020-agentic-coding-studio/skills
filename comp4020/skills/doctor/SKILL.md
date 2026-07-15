@@ -106,10 +106,9 @@ full-stack half of the course; in the static half a missing flyctl is a WARN
 - `flyctl version` — installed?
 - `flyctl auth whoami` — logged in?
 - `flyctl orgs list` — are they a member of the course-managed org? The org name
-  is on the
-  [software and platforms](https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/topics/software-and-platforms/)
-  page; fetch it if you need to name the expected org. Not being in it is a WARN
-  (they may not have accepted the invite yet).
+  isn't finalised yet, so don't assert a specific one — seeing only their
+  personal org is a WARN (invites go out ahead of the full-stack half, and they
+  may not have accepted theirs yet).
 - **Payment method**: the course covers billing, so students must not add their
   own card. There's no reliable CLI check for this, so don't assert it — just
   remind them, if flyctl is set up, not to add a payment method and to point any
