@@ -85,7 +85,7 @@ deploys to that week's target. Ask once, and make the choice explicit:
 - **bare** — the template minus its build tooling. Hand-written HTML and CSS is
   a legitimate answer in the static half.
 
-**Never carry forward** the prototype source (`index.html`, `main.js`,
+**Never carry forward** the prototype source (`index.html`, `main.ts`,
 `styles.css`, components), your spec tests from last week (the invariants ship
 with the template; the week tests answer last week's contract), `PROCESS.md`, or
 `reflections/`. Each week answers a new provocation. A student who drags last
@@ -145,14 +145,14 @@ honest answer to "where did this CLAUDE.md come from".
 
 The week's published `spec` (step 1) is the contract the tutor verifies at the
 crit. Turning it into automated backpressure is the student's work — the
-template deliberately ships only the invariants (`spec/invariants.test.js`, true
+template deliberately ships only the invariants (`spec/invariants.test.ts`, true
 of any good website) and leaves the week's contract to them.
 
 Walk the spec with the student, line by line, and sort it:
 
 - **mechanically checkable** — "deployed and live", "the core flow persists
   across a reload", "a navigation landmark". Write tests for these in their own
-  file alongside the invariants (any `spec/*.test.js` runs with `pnpm check`).
+  file alongside the invariants (any `spec/*.test.ts` runs with `pnpm check`).
   Assert the **contract** — what the page must do, not how it's built — so the
   tests survive a change of approach, or of stack.
 - **judged by a person** — "the look commits to an era", "yours is better in
