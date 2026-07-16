@@ -67,6 +67,12 @@ recommended tools (mise, package manager) are WARN.
   in. This is the check that matters: an installed-but-unauthenticated `gh`
   fails the moment they try to clone or open a PR. Fix: `gh auth login` (walk
   them through the browser flow; suggest HTTPS + "Login with a web browser").
+- `gh repo edit --help | grep -q accept-visibility-change-consequences` — new
+  enough? Check the capability, not a version number. A distro-packaged `gh`
+  (Ubuntu still ships 2.45) predates that flag, so **ship**'s public flip dies
+  with `unknown flag` — and it dies at the cutoff, which is the worst possible
+  time to discover it. Fix: install `gh` from GitHub's own apt repo or Homebrew
+  rather than `apt install gh`.
 
 ### Course GitHub org membership (required, hits an external service)
 
