@@ -81,12 +81,23 @@ You are a repo admin on your own repo, so this works. If it 403s, you are not
 admin, or the org has restricted visibility changes — say so, don't retry.
 
 For the **static half** (weeks 2–6), the flip is what makes Pages available.
-Enable it from the default branch, then dispatch the deploy workflow and wait:
+Enable it as a **workflow** site, then dispatch the deploy workflow and wait:
 
 ```sh
-gh api -X POST /repos/{owner}/{repo}/pages -f 'source[branch]=main' -f 'source[path]=/'
+gh api -X POST /repos/{owner}/{repo}/pages -f build_type=workflow
 gh workflow run <deploy workflow> && gh run watch
 ```
+
+`build_type=workflow` is load-bearing, and the tempting alternative
+(`-f 'source[branch]=main' -f 'source[path]=/'`) is actively wrong here. It
+makes a _legacy_ Pages site that publishes the branch root — your unbuilt
+source, where `index.html` still points at `main.ts` no browser can run — and it
+arms GitHub's own `pages build and deployment` job, which fires on every push,
+ignores whether your checks passed, and races the real deploy. The symptom is a
+marked URL that intermittently serves a broken site, including from commits CI
+rejected. The deploy job can't enable Pages for you either: creating a Pages
+site needs admin, and `GITHUB_TOKEN` isn't ("Resource not accessible by
+integration"), which is why this step is yours to run.
 
 For the **full-stack half** (weeks 8+), the deploy is fly.io and doesn't depend
 on visibility at all — `flyctl deploy`, then check the machine is healthy.
