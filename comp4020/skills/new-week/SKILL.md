@@ -1,13 +1,13 @@
 ---
 name: new-week
 description:
-  Sets up a COMP4020/COMP8020 student's repo for a new weekly crit prototype —
-  clones the repo the course provisioned for them, carries their CLAUDE.md /
-  AGENTS.md harness forward from last week, pulls the week's spec from the
-  course API, and helps them turn its checkable lines into tests. Use at the
-  start of a crit week, or when the user asks to "start this week's prototype",
-  "set up week N", "clone this week's repo", "pull this week's spec", or "carry
-  my CLAUDE.md forward".
+  Sets up a COMP4020/COMP8020 student's repo for a new deliverable — a weekly
+  crit prototype or an assignment. Clones the repo the course provisioned for
+  them, carries their CLAUDE.md / AGENTS.md harness forward from last week,
+  pulls the spec from the course API, and helps them turn its checkable lines
+  into tests. Use at the start of a crit week, or for "start this week's
+  prototype", "start assignment 1", "set up week N", "clone this week's repo",
+  "pull this week's spec", or "carry my CLAUDE.md forward".
 ---
 
 # COMP4020 new week
@@ -41,8 +41,11 @@ Entries can share a prefix: the retro crits point at the assignment repo they
 demo, and the final project's repo (`comp4020-final`) serves the week 9–11 crits
 _and_ the A3 submission. Sharing a prefix means sharing a repo, so:
 
-- **weeks 4 and 7** are retro crits — you present the assignment that just
-  landed, so there's no new prototype and nothing to set up. Say so and stop.
+- a crit whose `repoPrefix` matches an assessment's is a **retro crit** (weeks 4
+  and 7): the student presents the assignment that just landed, so there's no
+  new prototype and no harness merge. Offer the retro prep instead — confirm
+  which repo they're presenting, run **submission-preflight** against it, and
+  check its deployed URL still serves — then stop.
 - **week 9** starts the **final-project repo**: created once and carried through
   to the A3 deadline. Run this skill for it as normal — harness carried forward,
   stack chosen deliberately (this is the stack you'll justify in A3).
@@ -181,10 +184,10 @@ green are exactly the process evidence `PROCESS.md` wants to cite.
   and is not the one your tutor will mark.
 - If they've already cloned this week's repo, don't clone a second copy. Offer
   to run the harness merge into what they have.
-- Assignment repos (A1, A2, A3) have the same anatomy, and the harness carries
-  into them the same way — the spec pull too (`kind: assessment` in the
-  deliverables map). If a student asks, do it — just don't invent a brief or a
-  due date that the site doesn't state.
+- Assignments (A1–A3) run through this skill exactly like crits
+  (`kind: assessment` in the deliverables map) — same repo anatomy, same harness
+  carry, same spec pull. Don't invent a brief or a due date the site doesn't
+  state.
 
 ## Hand off
 
