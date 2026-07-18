@@ -1,20 +1,15 @@
 ---
 name: quickstart
 description:
-  Walks a new COMP4020/COMP8020 student through first-time setup end to end —
-  configuring their Claude Code strproxy API key (checking whether it's already
-  set, guiding them to the key on Canvas, writing it safely into settings —
-  user-global, or scoped to course repos for students with their own Claude
-  subscription — and verifying the round-trip), accepting their invitation to
-  the course GitHub org, recording their crit group so deadline-aware skills can
-  quote their real cutoff, and optionally turning on the budget status line.
-  Each step is independently re-runnable, so a student who is already set up can
-  come back for just one of them. Use for first-time setup, quickstart, "set up
-  my key", "Claude Code isn't using the course proxy", "join the course GitHub
-  org", "how do I get started", "set my crit group" (or "studio group"), "which
-  group am I in", "install the status line", "show my budget in the status
-  line", "turn off the status line", "I have my own Claude subscription", "use
-  my course credits in this repo", or "why does my status line say own plan".
+  Walks a new COMP4020/COMP8020 student through first-time setup — the Claude
+  Code strproxy API key (from Canvas, written safely into settings, verified
+  with a live call), joining the course GitHub org, recording their crit group,
+  and the optional budget status line. Students with their own Claude
+  subscription get the dual-plan setup (course key scoped to course repos).
+  Every step re-runs independently. Use for "how do I get started", "set up my
+  key", "join the course GitHub org", "set my crit group", "install the status
+  line", "use my course credits in this repo", "why does my status line say own
+  plan", or removing the course setup when semester ends.
 ---
 
 # COMP4020 quickstart: get your key working
@@ -37,6 +32,7 @@ thing should get that thing, not the whole tour:
   for dual-plan students in a fresh course repo.)
 - "set my crit group" / "my cutoff is wrong" → **step 6**, and stop.
 - "join the GitHub org" → **step 5**, and stop.
+- "remove the course setup" / "the course is over" → **step 9**, and stop.
 - anything open-ended ("set me up", "how do I get started") → start at step 1
   and work down.
 
@@ -193,12 +189,10 @@ gh api --method PATCH /user/memberships/orgs/comp4020-agentic-coding-studio \
 Do it now rather than later: **these invitations expire after seven days**, and
 a lapsed one has to be re-sent by the convenor.
 
-A `Not Found` means one of two different things. If `gh auth status` doesn't
-list the `read:org` scope, the check can't see the membership even if it exists
-— `gh auth refresh -h github.com -s read:org`, then re-check. If the scope is
-there, no invitation is outstanding, and that's a convenor issue:
-comp4020@anu.edu.au. Don't send them emailing about a problem on their own
-laptop.
+A `Not Found` needs triage — it's either a missing `read:org` scope on their
+`gh` auth or no outstanding invitation, and those have different fixes. That
+diagnosis belongs to **doctor**'s org-membership check; run it rather than
+guessing.
 
 ## 6. Record your crit group
 
@@ -267,14 +261,7 @@ To install:
 
    The hook copies the script to `~/.claude/comp4020/statusline.sh` at the start
    of the **next** session. If it isn't there yet, don't hunt for it — carry on
-   to step 2 and tell them it lights up when they restart. To have it now:
-
-   ```sh
-   mkdir -p ~/.claude/comp4020
-   src=$(ls -t ~/.claude/plugins/cache/*/comp4020-statusline/*/scripts/statusline.sh 2>/dev/null | head -1)
-   [ -n "$src" ] && cp "$src" ~/.claude/comp4020/statusline.sh &&
-     chmod +x ~/.claude/comp4020/statusline.sh
-   ```
+   to step 2 and tell them it lights up when they restart.
 
 2. Merge this into `~/.claude/settings.json` — **the same merge-never-clobber
    rule as step 3**. Installing the plugin never writes this for them; a plugin
@@ -299,24 +286,13 @@ To install:
 
 3. Tell them it appears in **new** sessions, not this one.
 
-What to say if they ask how it works, or why the number looks stale:
-
-- It reads a cached figure and refreshes at most once a minute in the
-  background, so it never slows a session down or hammers the proxy — the number
-  can lag real spend by up to a minute, on top of the proxy's own
-  eventually-consistent accounting. It's an indicator, not a ledger; for the
-  authoritative figure use **check-balance**.
-- `/api/me` is ANU-network-only, so off the VPN it keeps showing the last figure
-  it managed to fetch. `comp4020 budget: ?` means it has never reached the proxy
-  — the usual cause is being off the VPN, and their Claude sessions still work
-  fine. The `comp4020` tag itself never lies: if it's showing, the session is on
-  course credits, whatever the figure next to it says.
-- A key with no cap (rare) shows `comp4020 $3.50 this week` and no percentage.
-- It contacts nobody unless `ANTHROPIC_BASE_URL` names the strproxy host and
-  `ANTHROPIC_AUTH_TOKEN` holds a virtual key — the script won't send a
-  credential to a host it wasn't explicitly given. In that case it prints the
-  dim `own plan` tag instead: the session is running on the student's own
-  subscription, key, or gateway, not course credits.
+If they ask how it works, or why the number looks stale: it reads a cached
+figure refreshed at most once a minute in the background — an indicator, not a
+ledger (**check-balance** is authoritative). Off the VPN it keeps showing the
+last figure it managed to fetch (`comp4020 budget: ?` if it never has); their
+Claude sessions themselves still work. And it contacts nobody unless the session
+is actually routed through strproxy — otherwise it prints the dim `own plan`
+tag. Anything deeper is **doctor**'s status-line diagnosis.
 
 To turn it off: delete the `statusLine` block from `~/.claude/settings.json`. To
 also stop the hook reinstalling the script,
@@ -328,5 +304,18 @@ way.
 
 Once the key verifies and the org membership is `active`, offer to run the
 **doctor** skill to check the rest of the environment (Git, `gh`, flyctl,
-Chrome), and mention **check-balance** for "how much budget do I have". Keep it
-to a sentence — don't over-explain.
+Chrome), and mention that `/comp4020:help` lists everything else the plugin can
+do (balance checks, deadlines, weekly setup, shipping). Keep it to a sentence —
+don't over-explain.
+
+## 9. When the course ends
+
+The teardown, for a student who asks to remove the course setup (or is handing
+back a machine). Remove `ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN`, and
+`COMP4020_GROUP` from the `env` block of `~/.claude/settings.json` — plus any
+`.claude/settings.local.json` in course repos, and the `statusLine` block if it
+points at the course script. Then `claude plugin uninstall comp4020@comp4020`
+(and `comp4020-statusline@comp4020` if installed) and
+`rm -rf ~/.claude/comp4020`. A leftover global config keeps routing every
+session at a proxy that will eventually stop serving them — the classic symptom
+is "Claude Code stopped working after semester".

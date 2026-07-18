@@ -2,17 +2,14 @@
 name: doctor
 description:
   Checks a COMP4020/COMP8020 student's machine against the course's required
-  software environment — Git, the GitHub CLI (gh), membership of the course
-  GitHub org, flyctl, Claude Code's proxy config, Chrome, mise — including
-  whether the tools that talk to external services (gh, flyctl, the strproxy
-  key) are actually authenticated and working, and offers to fix what's broken.
-  Inside a course prototype repo it also checks the template's pre-commit key
-  guard is active and that no API key has been committed. Also checks the course
-  plugin itself is at the latest version, and diagnoses the optional budget
-  status line and its dependencies. Use whenever the user asks to check their
-  setup, "is everything installed", "why isn't gh/fly/claude working", "am I in
-  the course GitHub org", "why is my status line empty / stuck / not showing my
-  budget", or wants a setup/environment health check.
+  environment — Git, the GitHub CLI (gh), course GitHub org membership, flyctl,
+  Claude Code's proxy config, Chrome, mise — including whether the tools that
+  hit external services are actually authenticated — and offers to fix what's
+  broken. Inside a course repo it also checks the template's pre-commit key
+  guard; it verifies the plugin itself is current, and diagnoses the optional
+  budget status line. Use for "check my setup", "is everything installed", "why
+  isn't gh/fly/claude working", "am I in the course GitHub org", "why is my
+  status line empty / stuck", or any setup/environment health check.
 ---
 
 # COMP4020 environment doctor
@@ -243,15 +240,12 @@ the quiet-failure territory (VPN, cache) at the end. Check in this order:
 - **Native Windows** — there's no Unix shell to run it in. Not a FAIL; it's the
   same WSL2 story as everything else.
 
-Two symptoms worth naming, because neither is a broken setup:
-
-- **`comp4020 budget: ?`** means the session is on course credits but the script
-  has never once reached `/api/me`. Nearly always the ANU VPN, exactly as with
-  the live probe above. Their Claude sessions are unaffected.
-- **A number that won't move.** Expected: the figure is cached for 60 seconds
-  and refreshed in the background, so it always lags a little. Off the VPN it
-  will sit on the last figure it managed to fetch, indefinitely. If they want
-  the authoritative number now, that's the **check-balance** skill.
+Two symptoms that are not a broken setup: **`comp4020 budget: ?`** means the
+script has never reached `/api/me` — nearly always the ANU VPN, as with the live
+probe above — and **a number that won't move** is the 60-second cache (off the
+VPN it sits on the last fetched figure indefinitely). Either way their Claude
+sessions are unaffected, and the authoritative number is the **check-balance**
+skill.
 
 ### Chrome ≥ 140 (required)
 
