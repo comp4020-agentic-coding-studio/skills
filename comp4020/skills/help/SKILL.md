@@ -23,7 +23,7 @@ matches a skill's job.
 | Showing your budget in the status line (optional, opt-in)                   | **quickstart**, step 7   |
 | Whether your machine is set up right (Git, `gh`, the org, flyctl, Chrome)   | **doctor**               |
 | What's due / what to work on this week                                      | **deadline-radar**       |
-| Cloning this week's prototype repo, carrying your CLAUDE.md forward         | **new-week**             |
+| Starting this week's prototype or an assignment, carrying CLAUDE.md forward | **new-week**             |
 | Whether your work is ready to submit before a deadline                      | **submission-preflight** |
 | Making your repo public and getting it deployed at the cutoff               | **ship**                 |
 
