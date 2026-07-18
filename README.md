@@ -79,15 +79,16 @@ with weights, leading with the single most urgent thing. Invoke with
 
 ### new-week
 
-Sets up the repo for a new weekly crit prototype: creates it (private) from that
-week's starter template, then **merges the student's `CLAUDE.md` / `AGENTS.md`
-harness forward** from last week's repo rather than resetting them to
-boilerplate, keeping the rules they've accreted and taking the template's new
-material. Asks whether they're keeping their stack or switching, and refuses to
-carry the prototype source, `spec/` or reflections across. Knows which weeks
-don't start a fresh prototype (the retro crits, and weeks 9–11, which run on the
-final-project repo). Invoke with `/comp4020:new-week` or ask to "start this
-week's prototype".
+Sets up the repo for a new weekly crit prototype or an assignment. The course
+provisions each repo (private, from the starter template); this skill clones it,
+then **merges the student's `CLAUDE.md` / `AGENTS.md` harness forward** from
+last week's repo rather than resetting them to boilerplate, keeping the rules
+they've accreted and taking the template's new material. Asks whether they're
+keeping their stack or switching, refuses to carry the prototype source or
+reflections across, and pulls the week's spec so the student can turn it into
+their own tests. Knows which weeks don't start a fresh prototype (the retro
+crits, and weeks 9–11, which run on the final-project repo). Invoke with
+`/comp4020:new-week` or ask to "start this week's prototype".
 
 ### submission-preflight
 
@@ -98,6 +99,15 @@ tree, everything pushed to GitHub, marker can see it, required structure present
 to run the safe fixes (commit, push), but leaves the actual submission to the
 student. Invoke with `/comp4020:submission-preflight` or ask "am I ready to
 submit?".
+
+### ship
+
+The one irreversible act in the course, treated accordingly: re-runs
+submission-preflight, scans the working tree **and history** for secrets, then —
+with explicit confirmation — flips the repo public, enables GitHub Pages (as a
+workflow site), and verifies the live URL actually serves. In the final-project
+run (weeks 9–11) it also tags the crit-cutoff state. Invoke with
+`/comp4020:ship` or say "ship it" / "make my repo public".
 
 ### help
 
