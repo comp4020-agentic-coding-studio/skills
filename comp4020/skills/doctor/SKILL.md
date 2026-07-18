@@ -135,6 +135,11 @@ routed through the course proxy and the key works:
   course repos is the setup working, not a failure. Missing in both places means
   they're either on their own Anthropic billing everywhere or unconfigured — ask
   which before routing them to the **quickstart** skill.
+- `ANTHROPIC_MODEL` pinned (the course default is `claude-sonnet-5`), in the
+  same settings file as the other two vars? Not a hard failure — everything
+  works without it — but unpinned Claude Code defaults API-key users to Opus,
+  which burns the weekly budget several times faster, so WARN and offer to add
+  it (quickstart step 3 has the block).
 - **Live probe**: `GET /api/me` with the key confirms three things at once — the
   key is valid, the proxy is reachable, and they're on the ANU network/VPN:
   ```sh

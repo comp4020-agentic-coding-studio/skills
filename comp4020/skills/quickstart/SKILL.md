@@ -79,23 +79,24 @@ answer decides where the key goes:
   user-global, into `~/.claude/settings.json`. Every session everywhere runs on
   course credits, which is exactly right for them.
 - **Yes — they have their own plan**: scope the course key to course repos
-  instead (the **dual-plan branch** below). Written user-global, these two env
-  vars silently take over their personal subscription in _every_ project — they
-  would burn course credits on their own side projects while their paid plan sat
+  instead (the **dual-plan branch** below). Written user-global, these env vars
+  silently take over their personal subscription in _every_ project — they would
+  burn course credits on their own side projects while their paid plan sat
   unused. If they've already done the global setup and then mention a personal
-  plan, the fix is a move, not a copy: delete the two vars from
+  plan, the fix is a move, not a copy: delete the three vars from
   `~/.claude/settings.json`, then set up the repo-scoped version.
 
 Either way the block is the same, and the rule is the same: **merge, never
 clobber** — read the existing file first (it may already hold other settings),
-add or update just the two keys inside the `env` object, and write it back as
+add or update just the three keys inside the `env` object, and write it back as
 valid JSON:
 
 ```json
 {
   "env": {
     "ANTHROPIC_BASE_URL": "https://strproxy.comp.anu.edu.au",
-    "ANTHROPIC_AUTH_TOKEN": "sk-…(their key)"
+    "ANTHROPIC_AUTH_TOKEN": "sk-…(their key)",
+    "ANTHROPIC_MODEL": "claude-sonnet-5"
   }
 }
 ```
@@ -105,6 +106,11 @@ Notes:
 - The variable is `ANTHROPIC_AUTH_TOKEN`, **not** `ANTHROPIC_API_KEY` — the
   proxy authenticates on the `Authorization` header, which is what Claude Code
   sends for `AUTH_TOKEN`.
+- The `ANTHROPIC_MODEL` pin matters for their budget: on an API key, Claude Code
+  otherwise defaults to Opus — several times Sonnet's price per token — and can
+  burn a week's allocation in a day. Don't drop it; if they want a different
+  tier for a specific task, that's a deliberate per-session choice, not a
+  settings change.
 - If the file doesn't exist, create it. If it exists but has no `env` block, add
   one; preserve everything else verbatim.
 - Confirm the write with the student before saving.
