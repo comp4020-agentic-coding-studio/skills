@@ -36,33 +36,17 @@ fetch the node's own JSON (`/api/<collection>/<slug>.json`) and read the `body`
 
 ## 3. Turn week numbers into dates
 
-Crits carry a `meta.week`, not a date. Map week → the Monday that week starts
-using the course calendar below. Note the **two-week teaching break** between
-weeks 6 and 7 — weeks 7–12 do _not_ follow a naive `week × 7` from term start.
-
-Semester 2, 2026 (term starts Monday 27 July; 6 teaching weeks, a two-week
-break, then 6 more):
-
-| Week | Monday | Week | Monday |
-| ---- | ------ | ---- | ------ |
-| 1    | 27 Jul | 7    | 21 Sep |
-| 2    | 3 Aug  | 8    | 28 Sep |
-| 3    | 10 Aug | 9    | 5 Oct  |
-| 4    | 17 Aug | 10   | 12 Oct |
-| 5    | 24 Aug | 11   | 19 Oct |
-| 6    | 31 Aug | 12   | 26 Oct |
-
-(Break: weeks of 7 Sep and 14 Sep — no teaching.) Update this table each time
-the plugin is reused for a new offering; it's the one course-instance fact this
-skill hard-codes because the site's API exposes week numbers, not dates.
+Crits carry a `meta.week`, not a date. Fetch `/api/crit-groups.json`: its
+`weeks` array maps every teaching week to the Monday it starts, and
+`teachingBreak` gives the mid-term break's bounds. Use that mapping — never
+`week × 7` arithmetic from the term start, which the break silently breaks.
 
 A crit in week N happens during the week beginning at that Monday. If
-`$COMP4020_GROUP` is set (see **quickstart**), do better than the Monday:
-resolve the student's session and cutoff from the crit-group data at
-`/api/crit-groups.json` (one entry per group, keyed by agent name, with
-`session` and `cutoff` fields) and quote the deadline that actually binds — the
-cutoff, two hours before the session. If it's unset, give the Monday, and
-mention that setting their group (quickstart, step 6) gets exact times.
+`$COMP4020_GROUP` is set (see **quickstart**), do better than the Monday: the
+same file's `groups` entries (keyed by agent name) carry each group's `session`
+and `cutoff`, so quote the deadline that actually binds — the cutoff, two hours
+before the session. If it's unset, give the Monday, and mention that setting
+their group (quickstart, step 6) gets exact times.
 
 ## 4. Order and bucket
 
@@ -73,7 +57,7 @@ Sort by due date ascending (crits by their week's Monday, assessments by
   an extension — don't assume they've missed it).
 - **this week** / **next week** / **later**.
 
-If today falls in the two-week break, say so — nothing is due _this_ week; look
+If today falls inside `teachingBreak`, say so — nothing is due _this_ week; look
 to the resumption in week 7. Skip anything marked `meta.draft: true` from firm
 claims, or flag it as not-yet-finalised.
 
