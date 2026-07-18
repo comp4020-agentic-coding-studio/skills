@@ -61,10 +61,13 @@ Classify each PASS / WARN / FAIL:
   `reflections/`, and `CLAUDE.md`. A failure here is a FAIL — these are read by
   the marker on every deliverable.
 
-## 3. Deploy checks (full-stack half, weeks 7+)
+## 3. Deploy checks (when a live URL is expected)
 
-Only relevant once the course expects a live deployment — skip in the static
-half unless the spec asks for a deployed URL.
+Pages is the static half's deploy target, Fly the full-stack half's — but in the
+static half the deploy only happens when **ship** flips the repo public at the
+cutoff, so pre-cutoff there is usually nothing to probe yet. Run these in the
+full-stack half (week 8 onwards), on a re-run after shipping, or whenever the
+spec asks for a live URL; otherwise skip.
 
 - **Static (GitHub Pages)**: `gh run list --limit 5` — did the most recent Pages
   build succeed? A red build means the live site is stale or broken. Point them

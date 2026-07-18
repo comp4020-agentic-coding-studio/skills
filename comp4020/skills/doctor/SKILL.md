@@ -108,7 +108,7 @@ scope problem on their own laptop wastes everyone's week.
 
 The binary is `flyctl` (also symlinked as `fly`). Only hard-FAIL this in the
 full-stack half of the course; in the static half a missing flyctl is a WARN
-("you'll need this from week 7").
+("you'll need this from the full-stack half, week 8 onwards").
 
 - `flyctl version` — installed?
 - `flyctl auth whoami` — logged in?
