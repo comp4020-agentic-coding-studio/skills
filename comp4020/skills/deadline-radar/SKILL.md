@@ -43,10 +43,11 @@ Crits carry a `meta.week`, not a date. Fetch `/api/crit-groups.json`: its
 
 A crit in week N happens during the week beginning at that Monday. If
 `$COMP4020_GROUP` is set (see **quickstart**), do better than the Monday: the
-same file's `groups` entries (keyed by agent name) carry each group's `session`
-and `cutoff`, so quote the deadline that actually binds — the cutoff, two hours
-before the session. If it's unset, give the Monday, and mention that setting
-their group (quickstart, step 6) gets exact times.
+same file's `groups` array has one entry per group, each carrying an `agent`
+field, a `session`, and a `cutoff` — find yours by matching `agent` against
+`$COMP4020_GROUP`, so you can quote the deadline that actually binds: the
+cutoff, two hours before the session. If it's unset, give the Monday, and
+mention that setting their group (quickstart, step 6) gets exact times.
 
 ## 4. Order and bucket
 

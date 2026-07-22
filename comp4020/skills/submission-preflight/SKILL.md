@@ -27,8 +27,9 @@ spec** (from the course site) with the **student's actual repo state**.
 - **Crit cutoffs are group-relative** — two hours before the student's own
   session, so a different time for every crit group. Read `$COMP4020_GROUP` (set
   during **quickstart**) and resolve the session and cutoff from the crit-group
-  data at `/api/crit-groups.json` (one entry per group, keyed by agent name,
-  with `session` and `cutoff` fields). If the variable is unset, say "two hours
+  data at `/api/crit-groups.json` (`groups` is an array, one entry per group,
+  each with an `agent` field plus `session` and `cutoff` — match `agent` against
+  `$COMP4020_GROUP` to find yours). If the variable is unset, say "two hours
   before your session", ask which group they're in, and offer to save it
   (quickstart, step 6) so it's never asked again.
 - **The repo**: default to the git repo in the current directory. Confirm it's
