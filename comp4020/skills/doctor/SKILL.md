@@ -109,10 +109,11 @@ full-stack half of the course; in the static half a missing flyctl is a WARN
 
 - `flyctl version` — installed?
 - `flyctl auth whoami` — logged in?
-- `flyctl orgs list` — are they a member of the course-managed org? The org name
-  isn't finalised yet, so don't assert a specific one — seeing only their
-  personal org is a WARN (invites go out ahead of the full-stack half, and they
-  may not have accepted theirs yet).
+- `flyctl orgs list` — each student's app lives in their own per-student linked
+  Fly org (`comp4020-<uid>`), not one shared course org, so there's no single
+  org name to assert here. What matters is that the invited account shows _some_
+  org beyond their personal one — seeing only "personal" is a WARN (invites go
+  out ahead of the full-stack half, and they may not have accepted theirs yet).
 - **Payment method**: the course covers billing, so students must not add their
   own card. There's no reliable CLI check for this, so don't assert it — just
   remind them, if flyctl is set up, not to add a payment method and to point any
