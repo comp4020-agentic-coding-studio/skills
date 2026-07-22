@@ -42,9 +42,10 @@ is the week-1 job, and the thing to set up right after your week-N crit is week
 N+1's. Resolve deadlines concretely:
 
 - a **crit's** deadline is the student's group cutoff in the deliverable's week:
-  the group's `cutoff` day and time (from `groups`, keyed by `$COMP4020_GROUP` —
-  if it's unset, ask which group they're in; quickstart step 6 records it)
-  anchored to that week's Monday from `weeks`.
+  the group's `cutoff` day and time (`groups` is an array, one entry per group —
+  find yours by matching its `agent` field against `$COMP4020_GROUP`; if it's
+  unset, ask which group they're in; quickstart step 6 records it) anchored to
+  that week's Monday from `weeks`.
 - an **assessment's** deadline is its `due` date.
 
 Pick the deliverable with the earliest deadline still ahead. If its repo is
@@ -59,8 +60,10 @@ Then read the target's own JSON — `/api/crits/<slug>.json` for `kind: crit`,
 published contract) and the `body` (the full brief).
 
 Entries can share a prefix: the retro crits point at the assignment repo they
-demo, and the final project's repo (`comp4020-final`) serves the week 9–11 crits
-_and_ the A3 submission. Sharing a prefix means sharing a repo, so:
+demo, and the final project's repo prefix (`comp4020-final` — the actual repo is
+`comp4020-final-<handle>`, per the `<prefix>-<handle>` convention above) serves
+the week 9–11 crits _and_ the A3 submission. Sharing a prefix means sharing a
+repo, so:
 
 - a crit whose `repoPrefix` matches an assessment's is a **retro crit** (weeks 4
   and 7): the student presents the assignment that just landed, so there's no
@@ -77,10 +80,12 @@ _and_ the A3 submission. Sharing a prefix means sharing a repo, so:
 - **week 12** has no crit.
 
 The template follows the half of the course — the static half (weeks 2–6) uses
-`comp4020-agentic-coding-studio/template-static`, the full-stack half (week 8
-onwards) uses the full-stack template — but within a half it's the same template
-every week; nothing about the deliverable is baked into it. You never choose a
-template: the course provisioned your repo from the right one.
+`comp4020-agentic-coding-studio/template-static`; week 7 is the A2 retro, so it
+reuses the assignment repo rather than a fresh template (the retro-crit case
+above); the full-stack half (week 8 onwards) uses
+`comp4020-agentic-coding-studio/template-dynamic`. Within a half it's the same
+template every week; nothing about the deliverable is baked into it. You never
+choose a template: the course provisioned your repo from the right one.
 
 ## 2. Find last week's harness
 
