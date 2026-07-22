@@ -105,11 +105,24 @@ rejected. The deploy job can't enable Pages for you either: creating a Pages
 site needs admin, and `GITHUB_TOKEN` isn't ("Resource not accessible by
 integration"), which is why this step is yours to run.
 
-For the **full-stack half** (weeks 8+), the deploy is fly.io and doesn't depend
-on visibility at all — `flyctl deploy`, then check the machine is healthy.
+For the **full-stack half** (weeks 8+), the deploy is gated on the same
+visibility flip — CI's `deploy` job only runs once the repo is public, same as
+Pages. The flip triggers no push event, so dispatch the workflow and wait,
+exactly as above:
 
-Verify the live URL yourself. A Pages site takes a minute or two to build after
-being enabled, so poll rather than declaring victory:
+```sh
+gh workflow run <deploy workflow> && gh run watch
+```
+
+That single run builds and checks the app, then — once `check` passes — deploys
+to Fly and verifies the live URL and the live-update stream itself. You never
+hold the deploy credential: the token is a repo secret installed at
+provisioning, so never run `flyctl deploy` yourself. If the run fails in the
+`deploy` job, `flyctl status -a <repo-name>` and `flyctl logs -a <repo-name>`
+are read-only ways to see why — reading, not deploying by hand.
+
+Verify the live URL yourself too. The site takes a moment to come up once the
+workflow finishes, so poll rather than declaring victory:
 
 ```sh
 curl -sf -o /dev/null -w '%{http_code}' <url>
